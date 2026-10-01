@@ -1,0 +1,4 @@
+config.py
+nails.db
+__pycache__/
+.vs/

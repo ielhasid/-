@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBF8F5">
+<title>קביעת תור · yuvalnails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&family=Parisienne&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF8F5;
+    --card: #FFFFFF;
+    --text: #5E3833;
+    --muted: #85625C;
+    --line: #EADFD9;
+    --accent: #7A3F8C;
+    --accent-soft: #F1E6F3;
+    --script: #B47CC2;
+    --danger: #A23B3B;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Assistant', sans-serif; }
+  body { min-height: 100vh; }
+  a { color: var(--accent); text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  button:disabled { cursor: default; }
+  :focus-visible { outline: 3px solid var(--script); outline-offset: 2px; }
+
+  .app { max-width: 440px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .screen { display: none; flex-direction: column; flex-grow: 1; padding-bottom: 28px; }
+  .screen.active { display: flex; }
+
+  .flower { position: absolute; top: -18px; left: -22px; opacity: .55; pointer-events: none; }
+  header { padding: 44px 24px 0; display: flex; flex-direction: column; gap: 12px; position: relative; }
+  .wordmark { font-family: 'Parisienne', cursive; font-size: 30px; color: var(--script); line-height: 1; }
+  h1 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-weight: 700; font-size: 32px; line-height: 1.1; }
+  .sub { margin: 0; font-size: 17px; color: var(--muted); }
+  .back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; background: none; border: 0; padding: 0; color: var(--accent); font-size: 16px; font-weight: 600; }
+
+  .steps { display: flex; align-items: center; gap: 10px; }
+  .steps .bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex-grow: 1; }
+  .steps .bars span { height: 4px; border-radius: 4px; background: #E8DCD6; }
+  .steps .bars span.on { background: var(--accent); }
+  .steps small { font-size: 13px; color: var(--muted); }
+
+  .services { padding: 20px 20px 0; display: flex; flex-direction: column; gap: 12px; }
+  .service { display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; color: var(--text); text-align: right; width: 100%; transition: border-color .15s, box-shadow .15s; }
+  .service:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(122, 63, 140, .10); }
+  .service .name { display: block; font-size: 18px; font-weight: 700; }
+  .meta { display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .service .body { flex-grow: 1; }
+  .price { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .chip { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 14px; background: var(--accent-soft); border-radius: 12px; font-size: 15px; }
+  .chip b { font-weight: 700; }
+
+  .section-title { font-size: 15px; font-weight: 700; padding: 0 4px; margin: 0; }
+  .days-wrap { padding: 22px 0 0; display: flex; flex-direction: column; gap: 12px; }
+  .days-wrap .section-title { padding: 0 24px; }
+  .days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; scrollbar-width: none; }
+  .days::-webkit-scrollbar { display: none; }
+  .days::before, .days::after { content: ''; flex: 0 0 12px; }  /* רווח בקצוות של שורה נגללת */
+  .day { flex: 0 0 56px; height: 68px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); scroll-snap-align: start; padding: 0; }
+  .day small { font-size: 13px; }
+  .day strong { font-size: 19px; }
+  .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
+  .day:disabled { background: transparent; border-style: dashed; color: #B9A39E; }
+
+  .slots { padding: 22px 20px 0; display: flex; flex-direction: column; gap: 14px; }
+  .group { display: flex; flex-direction: column; gap: 8px; }
+  .group > span { font-size: 13px; color: var(--muted); padding: 0 4px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .slot { min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 16px; font-weight: 600; }
+  .slot[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
+  .empty { color: var(--muted); font-size: 15px; padding: 8px 4px; }
+
+  .bottom-bar { position: sticky; bottom: 0; margin-top: auto; padding: 14px 20px calc(18px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); display: flex; align-items: center; gap: 14px; }
+  .bottom-bar .summary { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+  .bottom-bar .summary small { font-size: 13px; color: var(--muted); }
+  .bottom-bar .summary strong { font-size: 17px; }
+
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 0 28px; border-radius: 27px; border: 0; background: var(--accent); color: #FFF; font-size: 17px; font-weight: 700; }
+  .btn:disabled { background: #CDB8D3; }
+  .btn.ghost { background: var(--card); color: var(--accent); border: 1.5px solid #DCCCC6; font-weight: 600; }
+  .btn.wide { width: 100%; }
+
+  .card { margin: 20px 20px 0; padding: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .divider { height: 1px; background: #EFE5E0; }
+  .check { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; font-size: 16px; }
+  .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+  .check span:nth-child(2) { flex-grow: 1; }
+  .total { font-family: 'Frank Ruhl Libre', serif; font-size: 26px; font-weight: 700; color: var(--accent); }
+
+  form { padding: 22px 20px 0; display: flex; flex-direction: column; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 15px; font-weight: 600; }
+  .field input { min-height: 52px; padding: 0 16px; border: 1px solid #DCCCC6; border-radius: 14px; background: var(--card); font: inherit; font-size: 17px; color: var(--text); }
+  .field input::placeholder { color: #A88E89; }
+  .field input[aria-invalid="true"] { border-color: var(--danger); }
+  .hint { font-size: 13px; color: var(--muted); }
+  .error { color: var(--danger); font-size: 15px; font-weight: 600; margin: 14px 24px 0; min-height: 1em; }
+  .form-actions { margin-top: auto; padding: 20px 20px 0; }
+
+  .done { align-items: center; text-align: center; }
+  .done .tick { margin-top: 96px; width: 88px; height: 88px; border-radius: 44px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+  .done h1 { margin-top: 24px; font-size: 34px; }
+  .done .card { width: calc(100% - 40px); text-align: right; }
+  .done .actions { width: calc(100% - 40px); margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+
+  footer { margin-top: auto; padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- מסך 1: בחירת טיפול -->
+  <section class="screen active" id="screen-service" aria-labelledby="t1">
+    <svg class="flower" width="170" height="150" viewBox="0 0 170 150" fill="none" stroke="#B9918A" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+      <path d="M60 75c-18-6-26-24-14-34s28 2 30 18c4-16 22-26 32-14s0 28-18 32c18 4 28 20 16 30s-28-2-32-18c-2 16-18 28-30 18s-2-28 16-32z"/>
+      <circle cx="77" cy="76" r="6"/>
+      <path d="M110 112c14 6 30 14 52 34M128 120c4-10 14-14 22-10M140 132c8-4 18-2 22 6M20 128c6-12 18-16 28-12-4 10-16 16-28 12z"/>
+    </svg>
+    <header>
+      <div class="wordmark">yuvalnails</div>
+      <h1 id="t1" style="margin-top: 8px">קביעת תור</h1>
+      <p class="sub">איזה טיפול נעשה הפעם?</p>
+      <div class="steps"><div class="bars"><span class="on"></span><span></span><span></span></div><small>שלב 1 מתוך 3</small></div>
+    </header>
+    <div class="services" id="services" role="list"></div>
+    <footer>
+      <span id="addon-hint"></span>
+      <a href="https://instagram.com/nailsby_yuval" dir="ltr" style="font-weight: 600">@nailsby_yuval</a>
+    </footer>
+  </section>
+
+  <!-- מסך 2: יום ושעה -->
+  <section class="screen" id="screen-time" aria-labelledby="t2">
+    <header>
+      <button class="back" type="button" data-go="service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
+      <h1 id="t2">מתי נוח לך?</h1>
+      <div class="steps"><div class="bars"><span class="on"></span><span class="on"></span><span></span></div><small>שלב 2 מתוך 3</small></div>
+      <div class="chip" id="time-chip"></div>
+    </header>
+    <div class="days-wrap">
+      <h2 class="section-title" id="month-title"></h2>
+      <div class="days" id="days" aria-label="בחירת יום"></div>
+    </div>
+    <div class="slots" id="slots" aria-live="polite"></div>
+    <div class="bottom-bar">
+      <div class="summary"><small>התור שלך</small><strong id="time-summary">בחרי יום ושעה</strong></div>
+      <button class="btn" type="button" id="to-details" disabled>המשך</button>
+    </div>
+  </section>
+
+  <!-- מסך 3: פרטים -->
+  <section class="screen" id="screen-details" aria-labelledby="t3">
+    <header>
+      <button class="back" type="button" data-go="time"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
+      <h1 id="t3">כמעט סיימנו</h1>
+      <div class="steps"><div class="bars"><span class="on"></span><span class="on"></span><span class="on"></span></div><small>שלב 3 מתוך 3</small></div>
+    </header>
+    <div class="card" aria-label="סיכום התור">
+      <div class="row"><strong id="d-service" style="font-size: 18px"></strong><span id="d-price" style="color: var(--muted)"></span></div>
+      <div class="meta" id="d-when" style="font-size: 15px"></div>
+      <div class="divider"></div>
+      <label class="check" id="addon-row">
+        <input type="checkbox" id="addon">
+        <span id="addon-label"></span>
+        <span id="addon-price" style="color: var(--muted); font-size: 15px"></span>
+      </label>
+      <div class="row"><span style="font-weight: 600">סה״כ לתשלום בסטודיו</span><span class="total" id="d-total"></span></div>
+    </div>
+    <form id="details-form" novalidate>
+      <div class="field">
+        <label for="name">שם מלא</label>
+        <input id="name" type="text" autocomplete="name" placeholder="איך קוראים לך?" required>
+      </div>
+      <div class="field">
+        <label for="phone">טלפון נייד</label>
+        <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050-0000000" dir="ltr" style="text-align: right" required>
+        <span class="hint">נשלח לך תזכורת יום לפני התור</span>
+      </div>
+    </form>
+    <p class="error" id="error" role="alert"></p>
+    <div class="form-actions">
+      <button class="btn wide" type="submit" form="details-form" id="book-btn">קביעת התור</button>
+    </div>
+  </section>
+
+  <!-- מסך 4: התור נקבע -->
+  <section class="screen done" id="screen-done" aria-labelledby="t4">
+    <div class="tick"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#7A3F8C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h1 id="t4">התור נקבע!</h1>
+    <p class="sub" style="margin-top: 8px">מחכה לך, יובל</p>
+    <div class="wordmark" style="font-size: 26px; margin-top: 4px">yuvalnails</div>
+    <div class="card" aria-label="פרטי התור">
+      <strong id="f-service" style="font-size: 18px"></strong>
+      <div class="meta" id="f-day" style="font-size: 16px"></div>
+      <div class="meta" id="f-time" style="font-size: 16px"></div>
+      <div class="meta" id="f-address" style="font-size: 16px"></div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="add-calendar">הוספה ליומן</button>
+      <a class="btn ghost" id="change-link" href="#">שינוי או ביטול התור</a>
+    </div>
+  </section>
+</div>
+
+<script>
+// ---------- מצב האפליקציה ----------
+// כל מה שהלקוחה בחרה נשמר באובייקט אחד. כל מסך קורא ממנו ומעדכן אותו.
+const state = { info: null, service: null, date: null, time: null, addon: false, booking: null };
+
+const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const LETTERS = { 'ראשון': 'א׳', 'שני': 'ב׳', 'שלישי': 'ג׳', 'רביעי': 'ד׳', 'חמישי': 'ה׳', 'שישי': 'ו׳', 'שבת': 'ש׳' };
+const $ = (id) => document.getElementById(id);
+
+// בונים אלמנטים עם textContent ולא innerHTML: ככה טקסט שמגיע מבחוץ (כמו שם של לקוחה)
+// לעולם לא יפורש כקוד. זו ההגנה הבסיסית מפני XSS.
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  for (const c of children) node.append(c);
+  return node;
+}
+
+async function api(path, options) {
+  const res = await fetch(path, options);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'משהו השתבש, נסי שוב');
+  return data;
+}
+
+function durationLabel(min) {
+  return { 30: 'חצי שעה', 60: 'שעה', 75: 'שעה ורבע', 90: 'שעה וחצי', 120: 'שעתיים' }[min] || `${min} דקות`;
+}
+function addMinutes(hhmm, min) {
+  const [h, m] = hhmm.split(':').map(Number);
+  const t = h * 60 + m + min;
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+}
+function totalMinutes() {
+  return state.service.duration_minutes + (state.addon && state.info.addon ? state.info.addon.duration_minutes : 0);
+}
+function totalPrice() {
+  return state.service.price + (state.addon && state.info.addon ? state.info.addon.price : 0);
+}
+function dayLabel(iso) {
+  const d = new Date(iso + 'T12:00');
+  const weekday = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'][d.getDay()];
+  return `יום ${weekday} ${d.getDate()}.${d.getMonth() + 1}`;
+}
+const clockIcon = () => {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('width', '14'); s.setAttribute('height', '14'); s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2');
+  s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';  // אייקון קבוע, לא קלט חיצוני
+  return s;
+};
+
+function show(name) {
+  document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === 'screen-' + name));
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => show(b.dataset.go)));
+
+// ---------- מסך 1 ----------
+function renderServices() {
+  const list = $('services');
+  list.replaceChildren(...state.info.services.map((s) =>
+    el('button', { class: 'service', type: 'button', role: 'listitem', onclick: () => pickService(s) },
+      el('span', { class: 'body' },
+        el('span', { class: 'name' }, s.name),
+        el('span', { class: 'meta' }, clockIcon(), durationLabel(s.duration_minutes))),
+      el('span', { class: 'price' }, `${s.price} ₪`))
+  ));
+  if (state.info.addon) $('addon-hint').textContent = `${state.info.addon.name} אפשר להוסיף בשלב 3`;
+}
+
+function pickService(service) {
+  Object.assign(state, { service, date: null, time: null, addon: false });
+  $('addon').checked = false;
+  $('time-chip').replaceChildren(el('b', {}, service.name),
+    el('span', { style: 'color: var(--muted)' }, `· ${durationLabel(service.duration_minutes)} · ${service.price} ₪`));
+  show('time');
+  loadDays();
+}
+
+// ---------- מסך 2 ----------
+async function loadDays() {
+  $('days').replaceChildren(); $('slots').replaceChildren(el('p', { class: 'empty' }, 'טוענת ימים פנויים…'));
+  updateTimeSummary();
+  try {
+    const { days } = await api(`/api/days?service_id=${state.service.id}&addon=${state.addon ? 1 : 0}`);
+    const first = days.find((d) => d.available);
+    const d0 = new Date(days[0].date + 'T12:00');
+    $('month-title').textContent = `${MONTHS[d0.getMonth()]} ${d0.getFullYear()}`;
+    $('days').replaceChildren(...days.map((d) => {
+      const num = Number(d.date.slice(8));
+      return el('button', {
+        class: 'day', type: 'button', 'data-date': d.date, 'aria-pressed': 'false',
+        'aria-label': `${dayLabel(d.date)}${d.available ? '' : ', אין תורים'}`,
+        ...(d.available ? {} : { disabled: '' }),
+        onclick: () => pickDay(d.date),
+      }, el('small', {}, LETTERS[d.weekday]), el('strong', {}, String(num)));
+    }));
+    if (state.date && days.some((d) => d.date === state.date && d.available)) pickDay(state.date, state.time);
+    else if (first) pickDay(first.date);
+    else $('slots').replaceChildren(el('p', { class: 'empty' }, 'אין תורים פנויים בשבועיים הקרובים. כדאי לשלוח הודעה ליובל.'));
+  } catch (e) {
+    $('slots').replaceChildren(el('p', { class: 'empty' }, e.message));
+  }
+}
+
+async function pickDay(date, keepTime = null) {
+  state.date = date; state.time = null;
+  document.querySelectorAll('.day').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.date === date)));
+  updateTimeSummary();
+  $('slots').replaceChildren(el('p', { class: 'empty' }, 'טוענת שעות…'));
+  try {
+    const { slots } = await api(`/api/slots?service_id=${state.service.id}&date=${date}&addon=${state.addon ? 1 : 0}`);
+    const groups = [['בוקר', (t) => t < '12:00'], ['צהריים', (t) => t >= '12:00' && t < '16:00'], ['ערב', (t) => t >= '16:00']]
+      .map(([name, test]) => [name, slots.filter(test)]).filter(([, list]) => list.length);
+    $('slots').replaceChildren(
+      el('h2', { class: 'section-title' }, `שעות פנויות ב${dayLabel(date)}`),
+      ...groups.map(([name, list]) => el('div', { class: 'group' },
+        el('span', {}, name),
+        el('div', { class: 'grid' }, ...list.map((t) =>
+          el('button', { class: 'slot', type: 'button', 'data-time': t, 'aria-pressed': 'false', onclick: () => pickTime(t) }, t)))))
+    );
+    if (keepTime && slots.includes(keepTime)) pickTime(keepTime);
+  } catch (e) {
+    $('slots').replaceChildren(el('p', { class: 'empty' }, e.message));
+  }
+}
+
+function pickTime(t) {
+  state.time = t;
+  document.querySelectorAll('.slot').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.time === t)));
+  updateTimeSummary();
+}
+
+function updateTimeSummary() {
+  $('time-summary').textContent = state.date && state.time ? `${dayLabel(state.date)} · ${state.time}` : 'בחרי יום ושעה';
+  $('to-details').disabled = !(state.date && state.time);
+}
+
+$('to-details').addEventListener('click', () => { renderDetails(); show('details'); });
+
+// ---------- מסך 3 ----------
+function renderDetails() {
+  const a = state.info.addon;
+  $('d-service').textContent = state.service.name;
+  $('d-price').textContent = `${state.service.price} ₪`;
+  $('d-when').replaceChildren(clockIcon(), `${dayLabel(state.date)} · ${state.time} – ${addMinutes(state.time, totalMinutes())}`);
+  $('addon-row').hidden = !a;
+  if (a) { $('addon-label').textContent = `להוסיף ${a.name}`; $('addon-price').textContent = `+${a.price} ₪`; }
+  $('d-total').textContent = `${totalPrice()} ₪`;
+  $('error').textContent = '';
+}
+
+$('addon').addEventListener('change', async (e) => {
+  state.addon = e.target.checked;
+  $('error').textContent = '';
+  if (state.addon) {
+    // התור מתארך: צריך לוודא שהשעה שנבחרה עדיין פנויה גם עם התוספת
+    try {
+      const { slots } = await api(`/api/slots?service_id=${state.service.id}&date=${state.date}&addon=1`);
+      if (!slots.includes(state.time)) {
+        state.addon = false; e.target.checked = false;
+        renderDetails();
+        $('error').textContent = 'עם התוספת התור לא נכנס בשעה הזו. אפשר לחזור ולבחור שעה אחרת.';
+        return;
+      }
+    } catch (err) {
+      state.addon = false; e.target.checked = false;
+      renderDetails();
+      $('error').textContent = err.message;
+      return;
+    }
+  }
+  renderDetails();
+});
+
+$('details-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = $('name').value.trim();
+  const phone = $('phone').value.trim();
+  const phoneDigits = phone.replace(/\D/g, '').replace(/^972/, '0');
+  $('name').setAttribute('aria-invalid', String(name.length < 2));
+  $('phone').setAttribute('aria-invalid', String(!/^05\d{8}$/.test(phoneDigits)));
+  if (name.length < 2) { $('error').textContent = 'צריך שם כדי לקבוע תור'; $('name').focus(); return; }
+  if (!/^05\d{8}$/.test(phoneDigits)) { $('error').textContent = 'מספר הטלפון לא נראה תקין'; $('phone').focus(); return; }
+
+  $('book-btn').disabled = true; $('book-btn').textContent = 'קובעת…'; $('error').textContent = '';
+  try {
+    state.booking = await api('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ service_id: state.service.id, start: `${state.date}T${state.time}`, name, phone, addon: state.addon }),
+    });
+    renderDone(name);
+    show('done');
+  } catch (err) {
+    $('error').textContent = err.message === 'השעה הזו כבר לא פנויה'
+      ? 'אופס, מישהי תפסה את השעה הזו ממש עכשיו. חזרי לבחור שעה אחרת.'
+      : err.message;
+  } finally {
+    $('book-btn').disabled = false; $('book-btn').textContent = 'קביעת התור';
+  }
+});
+
+// ---------- מסך 4 ----------
+function renderDone(name) {
+  const b = state.booking;
+  $('f-service').textContent = b.service;
+  $('f-day').replaceChildren(dayLabel(state.date));
+  $('f-time').replaceChildren(clockIcon(), `${b.start.slice(11)} – ${b.end.slice(11)}`);
+  $('f-address').textContent = state.info.studio_address || '';
+  $('f-address').hidden = !state.info.studio_address;
+  const wa = state.info.whatsapp;
+  $('change-link').hidden = !wa;
+  if (wa) {
+    const msg = `היי יובל, זו ${name}. אני רוצה לשנות או לבטל את התור שלי ב${dayLabel(state.date)} בשעה ${state.time}`;
+    $('change-link').href = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+  }
+}
+
+// קובץ .ics הוא פורמט סטנדרטי שכל אפליקציית יומן (גוגל, אפל, אאוטלוק) יודעת לפתוח
+$('add-calendar').addEventListener('click', () => {
+  const b = state.booking;
+  const fmt = (s) => s.replace(/[-: ]/g, '').slice(0, 12) + '00';
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//yuvalnails//booking//HE', 'BEGIN:VEVENT',
+    `UID:yuvalnails-${b.id}@booking`, `DTSTART;TZID=Asia/Jerusalem:${fmt(b.start)}`, `DTEND;TZID=Asia/Jerusalem:${fmt(b.end)}`,
+    `SUMMARY:${b.service} אצל יובל`, ...(state.info.studio_address ? [`LOCATION:${state.info.studio_address}`] : []),
+    'END:VEVENT', 'END:VCALENDAR',
+  ].join('\r\n');
+  const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+  el('a', { href: url, download: 'yuvalnails.ics' }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+// ---------- הפעלה ----------
+api('/api/info').then((info) => { state.info = info; renderServices(); })
+  .catch(() => $('services').replaceChildren(el('p', { class: 'empty' }, 'לא הצלחנו לטעון את הטיפולים. נסי לרענן את העמוד.')));
+</script>
+</body>
+</html>
