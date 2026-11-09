@@ -151,8 +151,9 @@ async def confirm_booking(query, context, service_id, start_dt):
     when = f"{_day_label(start_dt.date())} בשעה {start_dt.strftime('%H:%M')}"
     await query.edit_message_text(f"התור נקבע! ✨\n{s['name']}, {when}.\nנתראה 💖")
 
-    if config.OWNER_CHAT_ID:
-        await context.bot.send_message(config.OWNER_CHAT_ID, f"🔔 תור חדש: {user.full_name}\n{s['name']}, {when}")
+    owners = config.OWNER_CHAT_ID if isinstance(config.OWNER_CHAT_ID, (list, tuple)) else [config.OWNER_CHAT_ID]
+    for chat_id in filter(None, owners):
+        await context.bot.send_message(chat_id, f"🔔 תור חדש: {user.full_name}\n{s['name']}, {when}")
 
 
 # ---------- הפעלה ----------

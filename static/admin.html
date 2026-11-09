@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF7FA">
+<meta name="robots" content="noindex">
+<title>ניהול תורים · yuvalnails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&family=Parisienne&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF7FA; --card: #FFFFFF; --text: #5B3442; --muted: #8A5C6C; --line: #F5D9E3;
+    --accent: #B83C6E; --accent-soft: #FDE6EF; --script: #E38BB0; --danger: #A23B3B; --ok: #2F6B4F; --ok-soft: #E6F2EB;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Assistant', sans-serif; }
+  button, input { font-family: inherit; }
+  button { cursor: pointer; }
+  a { color: var(--accent); text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--script); outline-offset: 2px; }
+
+  .app { max-width: 560px; margin: 0 auto; padding: 36px 20px 40px; }
+  .wordmark { font-family: 'Parisienne', cursive; font-size: 28px; color: var(--script); line-height: 1; }
+  h1 { margin: 8px 0 0; font-family: 'Frank Ruhl Libre', serif; font-size: 30px; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .link-btn { background: none; border: 0; color: var(--muted); font-size: 15px; min-height: 44px; padding: 0 4px; }
+
+  .login { margin-top: 28px; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 12px; }
+  label { font-size: 15px; font-weight: 600; }
+  input[type=password], input[type=date] { min-height: 50px; padding: 0 14px; border: 1px solid #EFC9D7; border-radius: 14px; background: var(--card); font-size: 17px; color: var(--text); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 24px; border: 0; background: var(--accent); color: #FFF; font-size: 16px; font-weight: 700; }
+  .btn:disabled { background: #EBB7CB; }
+  .btn.ghost { background: var(--card); color: var(--accent); border: 1.5px solid #EFC9D7; }
+  .btn.danger { background: var(--card); color: var(--danger); border: 1.5px solid #E9CACA; font-weight: 600; }
+  .btn.sent { background: var(--ok-soft); color: var(--ok); }
+  .error { color: var(--danger); font-weight: 600; margin: 0; min-height: 1em; }
+
+  .tabs { margin-top: 22px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tab { min-height: 46px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 16px; font-weight: 600; }
+  .tab[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
+  .pick-date { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+  .pick-date input { flex-grow: 1; }
+
+  .day-title { margin: 22px 0 0; font-size: 20px; font-family: 'Frank Ruhl Libre', serif; }
+  .summary { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+  .banner { margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--accent-soft); font-size: 15px; line-height: 1.5; }
+  .banner.done { background: var(--ok-soft); color: var(--ok); }
+
+  .list { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .appt { padding: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .appt .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .appt .time { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+  .appt .name { font-size: 18px; font-weight: 700; }
+  .appt .details { color: var(--muted); font-size: 15px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .appt .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .appt .actions .btn { flex-grow: 1; }
+  .empty { color: var(--muted); padding: 24px 4px; text-align: center; }
+
+  .sections { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 4px; gap: 4px; }
+  .section-btn { min-height: 44px; border: 0; border-radius: 12px; background: transparent; color: var(--muted); font-size: 16px; font-weight: 700; }
+  .section-btn[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+  .panel { margin-top: 16px; padding: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .panel h3 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 20px; }
+  .panel p.note { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .week-row { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 10px; min-height: 48px; border-top: 1px solid #F3E8EC; padding-top: 8px; }
+  .week-row:first-of-type { border-top: 0; padding-top: 0; }
+  .week-row label.day { display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
+  .week-row input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }
+  .times { display: flex; align-items: center; gap: 6px; }
+  .times select { min-height: 44px; flex: 1; padding: 0 8px; border: 1px solid #EFC9D7; border-radius: 12px; background: var(--card); font-size: 16px; color: var(--text); }
+  .times .closed { color: var(--muted); font-size: 15px; }
+  .times .rm { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--danger); font-size: 20px; padding: 0; }
+  .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .mode { min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 15px; font-weight: 600; }
+  .mode[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
+  .status-line { padding: 10px 14px; border-radius: 12px; background: var(--bg); font-size: 15px; }
+  .ok-msg { color: var(--ok); font-weight: 600; margin: 0; min-height: 1em; }
+  .warn { padding: 12px 14px; border-radius: 12px; background: #FFF4E5; color: #7A4B00; font-size: 14px; line-height: 1.5; }
+  .range-row { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+  .range-row input[type=date] { flex: 1; min-height: 46px; }
+  .week-day { border-top: 1px solid #F3E8EC; padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .week-day:first-child { border-top: 0; padding-top: 0; }
+  .week-day .week-row { border-top: 0; padding-top: 0; }
+  .breaks { display: flex; flex-direction: column; gap: 6px; }
+  .breaks select { padding: 0 4px; font-size: 15px; }
+  .breaks .times::before { content: 'הפסקה'; font-size: 13px; color: var(--muted); flex: 0 0 auto; }
+  .times select, .times input[type=time] { min-width: 0; }
+  .times input[type=time] { min-height: 44px; flex: 1; padding: 0 8px; border: 1px solid #EFC9D7; border-radius: 12px; background: var(--card); font-size: 16px; color: var(--text); font-family: inherit; text-align: center; -webkit-appearance: none; appearance: none; }
+  .times input[type=time]:invalid { border-color: var(--danger); }
+  .times.hl input[type=time] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .link-add { background: none; border: 0; padding: 0; min-height: 36px; color: var(--accent); font-size: 14px; font-weight: 700; text-align: start; }
+  .period-list { display: flex; flex-direction: column; gap: 8px; }
+  .period { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); }
+  .period .info { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+  .period .info b { font-size: 15px; }
+  .period .info span { font-size: 14px; color: var(--muted); }
+  .period .tag { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .period .tag.closed { background: #F4E1E1; color: var(--danger); }
+  .period .del { min-height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid #E9CACA; background: var(--card); color: var(--danger); font-size: 14px; font-weight: 600; }
+  .period-form { display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: 14px; border: 1.5px solid #F6CADB; }
+  .period-form .field { display: flex; flex-direction: column; gap: 6px; }
+  .period-form input[type=text], .period-form input[type=date] { min-height: 46px; padding: 0 12px; border: 1px solid #EFC9D7; border-radius: 12px; background: var(--card); font-size: 16px; color: var(--text); width: 100%; }
+  .two-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .modes.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .opt { font-weight: 400; color: var(--muted); font-size: 13px; }
+  .row-btns { display: flex; gap: 8px; }
+  .row-btns .btn { flex-grow: 1; }
+
+  .add-btn { margin-top: 14px; width: 100%; }
+  .two-btns { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .note { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .radio-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); cursor: pointer; font-weight: 400; }
+  .radio-row input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex: 0 0 auto; }
+
+  .avail-banner { margin-top: 12px; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
+  .avail-banner.warn-c { background: #FFF1E0; color: #7A4B00; border: 1px solid #F5DDB8; }
+  .avail-banner.ok-c { background: #E6F2EB; color: #2F6B4F; border: 1px solid #CDE5D6; }
+  .cal { margin-top: 12px; padding: 10px 8px 10px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 6px; }
+  .cal-head h2 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 19px; }
+  .cal-nav { width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); color: var(--accent); display: flex; align-items: center; justify-content: center; padding: 0; }
+  .cal-nav:disabled { color: #EBD3DC; }
+  .cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .cal-week span { text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); padding: 2px 0 4px; }
+  .av-day { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: 58px; border-radius: 12px; padding: 0; color: var(--text); background: transparent; border: 1px solid transparent; }
+  .av-day .n { font-size: 16px; font-weight: 700; line-height: 1; }
+  .av-day .h { font-size: 10px; font-weight: 600; line-height: 1; white-space: nowrap; }
+  .av-day.full { background: #FDE6EF; border-color: #F6CADB; }
+  .av-day.part { background: #FFFFFF; border-color: #F6CADB; }
+  .av-day.closed { color: #A47E8C; }
+  .av-day.unset { border: 1.5px dashed #E0B3C4; color: var(--muted); }
+  .av-day.weekly { background: #FFFFFF; border-color: #F5E6EC; }
+  .av-day:disabled { color: #D3B8C2; cursor: default; }
+  .av-day.sel { box-shadow: 0 0 0 2px var(--accent); }
+  .av-day .cnt { position: absolute; top: 3px; left: 3px; min-width: 14px; height: 14px; border-radius: 7px; background: var(--accent); color: #FFF; font-size: 9px; font-weight: 700; line-height: 14px; text-align: center; }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: center; margin: 8px 0 0; font-size: 11px; color: var(--muted); }
+  .cal-legend span { display: flex; align-items: center; gap: 4px; }
+  .cal-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+
+  .sheet-backdrop { position: fixed; inset: 0; background: rgba(91, 52, 66, .2); z-index: 10; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 11; max-width: 560px; margin: 0 auto; max-height: 88vh; overflow-y: auto; background: var(--card); border-radius: 26px 26px 0 0; box-shadow: 0 -8px 30px rgba(91, 52, 66, .15); padding: 10px 20px calc(22px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; }
+  .sheet-handle { width: 40px; height: 4px; border-radius: 2px; background: #F0D5DF; align-self: center; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .sheet-head h2 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 22px; }
+  .sheet-close { width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font-size: 20px; padding: 0; flex: 0 0 auto; }
+  .presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .preset { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 64px; border-radius: 16px; border: 1px solid #EFC9D7; background: var(--card); color: var(--text); }
+  .preset b { font-size: 16px; }
+  .preset span { font-size: 13px; opacity: .85; }
+  .preset[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
+  .preset.closed { color: var(--muted); border-color: var(--line); }
+  .preset.closed[aria-pressed="true"] { color: #FFF; }
+  .custom-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 64px; border-radius: 16px; border: 1.5px dashed #E0B3C4; background: var(--bg); color: var(--text); padding: 8px 12px; }
+  .custom-btn b { font-size: 16px; }
+  .custom-btn span { font-size: 13px; color: var(--muted); }
+  .custom-btn[aria-pressed="true"] { border: 1.5px solid var(--accent); background: var(--accent-soft); }
+  .custom-box { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; border: 1px solid var(--line); background: var(--bg); }
+  .windows { display: flex; flex-direction: column; gap: 6px; }
+  .break-sep { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .break-sep::before, .break-sep::after { content: ''; flex: 1; border-top: 1px dashed #E0B3C4; }
+  .preview { margin: 0; font-size: 14px; color: var(--text); }
+  /* ציר הזמן של כל היום, 00:00–24:00 */
+  .tl { display: flex; flex-direction: column; gap: 4px; }
+  .tl-track { position: relative; height: 56px; border-radius: 12px; border: 1px solid var(--line); background-color: #FBF3F6;
+    background-image: repeating-linear-gradient(to right, #EBD9E0 0 1px, transparent 1px calc(100% / 24));
+    touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; overflow: hidden; }
+  .tl-open { position: absolute; top: 6px; bottom: 6px; border-radius: 6px; background: #FBD3E2; border: 1.5px solid var(--accent); cursor: pointer; }
+  .tl-open.draft { border-style: dashed; }
+  .tl-ghost { position: absolute; top: 4px; bottom: 4px; border-radius: 6px; background: rgba(184, 60, 110, .18); border: 2px dashed var(--accent); pointer-events: none; }
+  .tl-ghost b { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--accent); white-space: nowrap; background: #FFF; padding: 0 4px; border-radius: 4px; }
+  .tl-busy { position: absolute; top: 20px; height: 16px; border-radius: 4px; background: var(--accent); pointer-events: none; }
+  .tl-busy.pending { background: repeating-linear-gradient(45deg, var(--accent) 0 4px, #D77FA2 4px 8px); }
+  .tl-busy.block { background: #5B3442; }
+  .tl-now { position: absolute; top: 0; bottom: 0; width: 2px; background: #E0A100; pointer-events: none; }
+  .tl-scale { position: relative; height: 14px; font-size: 11px; color: var(--muted); }
+  .tl-scale span { position: absolute; transform: translateX(-50%); }
+  .tl-scale span:first-child { transform: none; }
+  .tl-scale span:last-child { transform: translateX(-100%); }
+  .tl-legend { display: flex; gap: 12px; justify-content: center; font-size: 11px; color: var(--muted); }
+  .tl-legend span { display: flex; align-items: center; gap: 4px; }
+  .tl-legend i { display: inline-block; width: 12px; height: 10px; border-radius: 3px; }
+  .tl-legend .k-open { background: #FBD3E2; border: 1px solid var(--accent); }
+  .tl-legend .k-appt { background: var(--accent); }
+  .tl-legend .k-block { background: #5B3442; }
+  .tl-hint { margin: 0; font-size: 12px; color: var(--muted); text-align: center; }
+  .preview.bad { color: var(--danger); font-weight: 600; }
+  .av-day .h2 { font-size: 9px; font-weight: 600; line-height: 1; white-space: nowrap; }
+  .sheet-links { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .link-add.muted { color: var(--muted); font-weight: 600; }
+
+  .pending-box { margin-bottom: 18px; padding: 14px; border-radius: 18px; background: #FFF6E6; border: 1.5px solid #F3D9A6; display: flex; flex-direction: column; gap: 10px; }
+  .pending-box h2 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 21px; color: #7A4B00; }
+  .pending-box .appt { border-color: #F3D9A6; }
+  .tag-wait { align-self: flex-start; padding: 3px 10px; border-radius: 10px; background: #FFF1D6; color: #7A4B00; font-size: 13px; font-weight: 700; }
+  .btn.approve { background: var(--ok); color: #FFF; }
+  .notice { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 14px; background: var(--ok-soft); color: var(--ok); font-weight: 600; font-size: 15px; }
+  .notice.off { background: #F3E6EA; color: var(--muted); }
+  .cancel-panel { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; border: 1.5px solid #E9CACA; background: #FFF8F8; font-size: 14px; line-height: 1.5; }
+  .gap-row { padding: 10px 14px; border-radius: 14px; border: 1.5px dashed #BFDCCB; color: #2F6B4F; font-size: 15px; display: flex; justify-content: space-between; gap: 10px; }
+  .block-row { padding: 12px 14px; border-radius: 16px; background: #5B3442; color: #FFF; display: flex; align-items: center; gap: 10px; }
+  .block-row .info { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+  .block-row .info span { font-size: 14px; opacity: .85; }
+  .block-row button { min-height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.4); background: transparent; color: #FFF; font-size: 14px; font-weight: 600; }
+  .add-form { margin-top: 14px; padding: 18px; background: var(--card); border: 1.5px solid #F6CADB; border-radius: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .add-form h3 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 20px; }
+  .add-form .field { display: flex; flex-direction: column; gap: 6px; }
+  .add-form .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .add-form select, .add-form input { min-height: 48px; padding: 0 12px; border: 1px solid #EFC9D7; border-radius: 12px; background: var(--card); font-size: 16px; color: var(--text); width: 100%; }
+  .add-form .hint { font-size: 13px; color: var(--muted); }
+  .add-form .row-btns { display: flex; gap: 8px; }
+  .add-form .row-btns .btn { flex-grow: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <div class="wordmark">yuvalnails</div>
+      <h1>ניהול תורים</h1>
+    </div>
+    <button class="link-btn" type="button" id="logout" hidden>יציאה</button>
+  </div>
+
+  <!-- התחברות -->
+  <form class="login" id="login-form">
+    <label for="password">סיסמה</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <p class="error" id="login-error" role="alert"></p>
+    <button class="btn" type="submit" id="login-btn">כניסה</button>
+  </form>
+
+  <!-- היומן -->
+  <nav class="sections" id="sections" hidden aria-label="אזורי ניהול">
+    <button class="section-btn" type="button" data-section="appts" aria-pressed="true">תורים</button>
+    <button class="section-btn" type="button" data-section="avail" aria-pressed="false">יומן זמינות</button>
+    <button class="section-btn" type="button" data-section="hours" aria-pressed="false">הגדרות</button>
+  </nav>
+
+  <section id="avail" hidden aria-label="יומן זמינות">
+    <p class="note" style="margin: 14px 4px 0">לחצי על יום כדי לקבוע באילו שעות את עובדת.</p>
+    <div class="avail-banner" id="avail-banner" hidden></div>
+    <div class="cal">
+      <div class="cal-head">
+        <button class="cal-nav" type="button" id="av-prev" aria-label="לחודש הקודם"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <h2 id="av-title" aria-live="polite"></h2>
+        <button class="cal-nav" type="button" id="av-next" aria-label="לחודש הבא"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="cal-week" aria-hidden="true"><span>א׳</span><span>ב׳</span><span>ג׳</span><span>ד׳</span><span>ה׳</span><span>ו׳</span><span>ש׳</span></div>
+      <div class="cal-grid" id="av-grid"></div>
+      <div class="cal-legend">
+        <span><i style="background: #FDE6EF; border: 1px solid #F6CADB"></i>יום מלא</span>
+        <span><i style="background: #FFFFFF; border: 1px solid #F6CADB"></i>חלק מהיום</span>
+        <span id="legend-unset"><i style="border: 1.5px dashed #E0B3C4"></i>עוד לא קבעת</span>
+        <span><i style="width: 12px; height: 12px; border-radius: 6px; background: var(--accent)"></i>תורים</span>
+      </div>
+    </div>
+    <p class="error" id="av-error" role="alert"></p>
+    <p class="ok-msg" id="av-ok" role="status"></p>
+  </section>
+
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <section class="sheet" id="sheet" hidden aria-labelledby="sheet-title" role="dialog" aria-modal="true">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h2 id="sheet-title"></h2>
+        <span id="sheet-status" class="note"></span>
+      </div>
+      <button type="button" class="sheet-close" id="sheet-close" aria-label="סגירה">×</button>
+    </div>
+    <div class="tl" id="tl">
+      <div class="tl-track" id="tl-track" dir="ltr" role="img"></div>
+      <div class="tl-scale" id="tl-scale" dir="ltr" aria-hidden="true"></div>
+      <div class="tl-legend" aria-hidden="true">
+        <span><i class="k-open"></i>פתוח ללקוחות</span>
+        <span><i class="k-appt"></i>תור</span>
+        <span><i class="k-block"></i>חסימה</span>
+      </div>
+      <p class="tl-hint">גררי על הפס כדי לפתוח שעות. לשעה מדויקת עד הדקה, שני את השעות למטה.</p>
+    </div>
+    <div class="presets" id="presets"></div>
+    <button type="button" class="custom-btn" id="sheet-custom-toggle" aria-expanded="false">
+      <b>לסדר את היום בעצמי</b>
+      <span>כל שעה ביום, עד הדקה, וכמה הפסקות שצריך</span>
+    </button>
+    <div class="custom-box" id="sheet-custom" hidden>
+      <div id="sheet-windows" class="windows"></div>
+      <button class="link-add" type="button" id="sheet-add-window">+ הפסקה, ואז ממשיכה לעבוד</button>
+      <p class="note" style="margin: 0" id="sheet-draft" hidden>השינויים עוד לא נשמרו. לחצי "שמירת השעות".</p>
+      <p class="preview" id="sheet-preview"></p>
+      <button class="btn wide" type="button" id="sheet-custom-save">שמירת השעות</button>
+    </div>
+    <p class="error" id="sheet-error" role="alert"></p>
+    <div class="warn" id="sheet-warn" hidden></div>
+    <div class="sheet-links">
+      <button type="button" class="link-add" id="sheet-day">התורים של היום וחסימת זמן ←</button>
+      <button type="button" class="link-add" id="sheet-copy">להעתיק את השבוע הזה לשבוע הבא</button>
+      <button type="button" class="link-add muted" id="sheet-reset" hidden>ביטול ההגדרה ליום הזה</button>
+    </div>
+  </section>
+
+  <section id="hours" hidden aria-label="הגדרות">
+    <div class="panel">
+      <h3>📅 התורים ביומן של האייפון</h3>
+      <p class="note">פעם אחת ולתמיד: כל תור שתאשרי יופיע לבד ביומן שלך בטלפון, ותור שבוטל ייעלם. הקישור סודי, אל תשלחי אותו לאף אחד.</p>
+      <a class="btn" id="cal-subscribe" href="#">להוספה ליומן באייפון</a>
+      <ol class="note" style="margin: 0; padding-inline-start: 20px; line-height: 1.7">
+        <li>לפתוח את עמוד הניהול <b>באייפון</b> וללחוץ על הכפתור.</li>
+        <li>במסך שנפתח ללחוץ "הירשם" (Subscribe), ואז "הוסף".</li>
+        <li>מומלץ: הגדרות ← יומן ← חשבונות ← יומנים במנוי ← "אחזור" ← כל 15 דקות.</li>
+      </ol>
+      <button class="link-add muted" type="button" id="cal-copy">העתקת הקישור (למחשב או ל-Google Calendar)</button>
+    </div>
+
+    <div class="panel">
+      <h3>יום שעוד לא קבעת לו שעות</h3>
+      <label class="radio-row"><input type="radio" name="unset" value="closed"><span><b>סגור ללקוחות</b><br><span class="note">לקוחות יכולות לקבוע רק בימים שפתחת ביומן הזמינות</span></span></label>
+      <label class="radio-row"><input type="radio" name="unset" value="weekly"><span><b>לפי השעות הקבועות</b><br><span class="note">כל יום פתוח לפי השעות הקבועות למטה, אלא אם שינית אותו</span></span></label>
+      <p class="ok-msg" id="unset-ok" role="status"></p>
+    </div>
+
+    <div class="panel">
+      <h3>שעות קבועות</h3>
+      <p class="note">השעות שבהן לקוחות יכולות לקבוע תור בכל שבוע. יום בלי סימון = סגור. אפשר להוסיף הפסקה קבועה לכל יום.</p>
+      <div id="week"></div>
+      <p class="error" id="week-error" role="alert"></p>
+      <p class="ok-msg" id="week-ok" role="status"></p>
+      <button class="btn" type="button" id="week-save">שמירת השעות הקבועות</button>
+    </div>
+
+    <div class="panel">
+      <h3>ימים מיוחדים וחופשות</h3>
+      <p class="note">ימים או תקופות שבהם השעות שונות מהרגיל: חופש, אירוע, או יום עם שעות אחרות.</p>
+      <div id="periods" class="period-list" aria-live="polite"></div>
+      <p class="error" id="periods-error" role="alert"></p>
+      <button class="btn ghost" type="button" id="open-period">+ הוספת יום מיוחד או חופש</button>
+
+      <div class="period-form" id="period-form" hidden>
+        <div class="two-dates">
+          <div class="field"><label for="day-date">מתאריך</label><input id="day-date" type="date"></div>
+          <div class="field"><label for="day-until">עד תאריך <span class="opt">(לא חובה)</span></label><input id="day-until" type="date"></div>
+        </div>
+        <div class="status-line" id="day-status" aria-live="polite"></div>
+        <div class="modes two" role="group" aria-label="מה לעשות בימים האלה">
+          <button class="mode" type="button" data-mode="closed">סגור</button>
+          <button class="mode" type="button" data-mode="custom">שעות מיוחדות</button>
+        </div>
+        <div id="custom-box" hidden>
+          <div id="windows" style="display: flex; flex-direction: column; gap: 8px"></div>
+          <button class="link-add" type="button" id="add-window">+ עוד טווח שעות (אחרי הפסקה)</button>
+        </div>
+        <div class="field"><label for="day-note">הערה <span class="opt">(לא חובה, רק את רואה)</span></label>
+          <input id="day-note" type="text" maxlength="60" placeholder="למשל: חופש, חתונה, השתלמות"></div>
+        <div class="warn" id="day-warn" hidden></div>
+        <p class="error" id="day-error" role="alert"></p>
+        <div class="row-btns">
+          <button class="btn" type="button" id="day-save">שמירה</button>
+          <button class="btn ghost" type="button" id="day-cancel">ביטול</button>
+        </div>
+      </div>
+      <p class="ok-msg" id="day-ok" role="status"></p>
+    </div>
+
+    <div class="panel">
+      <h3>עד מתי אפשר לקבוע תורים</h3>
+      <p class="note">לקוחות יראו ביומן רק ימים עד התאריך הזה.</p>
+      <div class="range-row">
+        <label for="until-date">עד תאריך</label>
+        <input id="until-date" type="date">
+      </div>
+      <p class="error" id="until-error" role="alert"></p>
+      <p class="ok-msg" id="until-ok" role="status"></p>
+      <button class="btn" type="button" id="until-save">שמירה</button>
+    </div>
+  </section>
+
+  <main id="main" hidden>
+    <div class="pending-box" id="pending-box" hidden aria-live="polite">
+      <h2 id="pending-title">בקשות שמחכות לאישור</h2>
+      <div id="notice-slot"></div>
+      <div class="list" id="pending-list"></div>
+    </div>
+    <div class="tabs" role="group" aria-label="בחירת יום">
+      <button class="tab" type="button" data-offset="0">היום</button>
+      <button class="tab" type="button" data-offset="1">מחר</button>
+      <button class="tab" type="button" data-offset="custom">תאריך אחר</button>
+    </div>
+    <div class="pick-date" id="pick-date" hidden>
+      <label for="date" style="white-space: nowrap">תאריך:</label>
+      <input id="date" type="date">
+    </div>
+
+    <h2 class="day-title" id="day-title"></h2>
+    <p class="summary" id="day-summary"></p>
+
+    <p class="summary" id="day-hours"></p>
+    <div class="two-btns">
+      <button class="btn ghost" type="button" id="open-add">+ הוספת תור</button>
+      <button class="btn ghost" type="button" id="open-block">+ חסימת זמן</button>
+    </div>
+    <form class="add-form" id="block-form" hidden novalidate>
+      <h3>חסימת זמן</h3>
+      <p class="note" style="margin: 0">למשל תור שקבעת בוואטסאפ, או סידור אישי. לקוחות לא יוכלו לקבוע בזמן הזה.</p>
+      <div class="two">
+        <div class="field"><label for="blk-from">משעה</label><input id="blk-from" type="time" step="60" dir="ltr" required></div>
+        <div class="field"><label for="blk-to">עד שעה</label><input id="blk-to" type="time" step="60" dir="ltr" required></div>
+      </div>
+      <div class="field"><label for="blk-note">הערה <span class="opt">(רק את רואה)</span></label>
+        <input id="blk-note" type="text" maxlength="80" placeholder="למשל: דנה – נקבע בוואטסאפ" autocomplete="off"></div>
+      <p class="error" id="blk-error" role="alert"></p>
+      <div class="row-btns">
+        <button class="btn" type="submit" id="blk-save">חסימה</button>
+        <button class="btn ghost" type="button" id="blk-cancel">ביטול</button>
+      </div>
+    </form>
+    <form class="add-form" id="add-form" hidden novalidate>
+      <h3>תור חדש</h3>
+      <div class="field">
+        <label for="add-service">טיפול</label>
+        <select id="add-service" required></select>
+      </div>
+      <div class="two">
+        <div class="field">
+          <label for="add-date">תאריך</label>
+          <input id="add-date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="add-time">שעה</label>
+          <select id="add-time" required></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="add-addon">השלמות ציפורן</label>
+        <select id="add-addon"></select>
+      </div>
+      <div class="field">
+        <label for="add-name">שם הלקוחה</label>
+        <input id="add-name" type="text" autocomplete="off" required>
+      </div>
+      <div class="field">
+        <label for="add-phone">טלפון</label>
+        <input id="add-phone" type="tel" inputmode="tel" dir="ltr" style="text-align: right" placeholder="050-0000000" autocomplete="off">
+        <span class="hint">לא חובה, אבל בלי טלפון אי אפשר לשלוח תזכורת בוואטסאפ</span>
+      </div>
+      <p class="error" id="add-error" role="alert"></p>
+      <div class="row-btns">
+        <button class="btn" type="submit" id="add-save">שמירת התור</button>
+        <button class="btn ghost" type="button" id="add-cancel">ביטול</button>
+      </div>
+    </form>
+
+    <div class="banner" id="banner" hidden></div>
+    <p class="error" id="error" role="alert"></p>
+    <div class="list" id="list" aria-live="polite"></div>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, '0');
+let currentDate = null, currentOffset = 1;
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  for (const c of children) node.append(c);
+  return node;
+}
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && !path.endsWith('/login')) { showLogin(); throw new Error('צריך להתחבר שוב'); }
+  // מספר השגיאה עוזר לאבחן: 404 = השרת לא מכיר את הכתובת (web.py ישן), 500 = תקלה בשרת (לבדוק Error log)
+  if (!res.ok) throw new Error(data.error || `משהו השתבש (שגיאה ${res.status})`);
+  return data;
+}
+
+function isoDaysFromToday(n) {
+  const d = new Date(); d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// ---------- התחברות ----------
+function showLogin() { showLogin2(); $('main').hidden = true; $('logout').hidden = true; $('login-form').hidden = false; $('password').focus(); }
+function showMain() {
+  $('login-form').hidden = true; $('logout').hidden = false; $('sections').hidden = false;
+  showSection('appts');
+}
+function showLogin2() { $('sections').hidden = true; $('hours').hidden = true; $('avail').hidden = true; closeSheet(); }
+
+// ---------- מעבר בין "תורים" ל"שעות פעילות" ----------
+function showSection(name) {
+  document.querySelectorAll('.section-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.section === name)));
+  $('main').hidden = name !== 'appts';
+  $('hours').hidden = name !== 'hours';
+  $('avail').hidden = name !== 'avail';
+  if (name === 'appts') selectTab(currentOffset);
+  else if (name === 'avail') loadAvail(avMonth || isoDaysFromToday(0).slice(0, 7));
+  else { loadHours(); loadCalendarLink(); }
+}
+
+async function loadCalendarLink() {
+  try {
+    const { url, webcal } = await api('/api/admin/calendar');
+    $('cal-subscribe').href = webcal;
+    $('cal-copy').onclick = async () => {
+      try { await navigator.clipboard.writeText(url); $('cal-copy').textContent = '✓ הועתק'; }
+      catch { $('cal-copy').textContent = url; }
+    };
+  } catch { /* לא קריטי */ }
+}
+document.querySelectorAll('.section-btn').forEach((b) => b.addEventListener('click', () => showSection(b.dataset.section)));
+
+$('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('login-btn').disabled = true; $('login-error').textContent = '';
+  try {
+    await api('/api/admin/login', { password: $('password').value });
+    $('password').value = '';
+    showMain();
+  } catch (err) {
+    $('login-error').textContent = err.message;
+  } finally {
+    $('login-btn').disabled = false;
+  }
+});
+$('logout').addEventListener('click', async () => { await api('/api/admin/logout', {}); showLogin(); });
+
+// ---------- בחירת יום ----------
+document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () =>
+  selectTab(t.dataset.offset === 'custom' ? 'custom' : Number(t.dataset.offset))));
+$('date').addEventListener('change', () => $('date').value && load($('date').value));
+
+function selectTab(offset) {
+  currentOffset = offset;
+  document.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-pressed', String(String(offset) === t.dataset.offset)));
+  $('pick-date').hidden = offset !== 'custom';
+  if (offset === 'custom') { $('date').value ||= isoDaysFromToday(2); load($('date').value); }
+  else load(isoDaysFromToday(offset));
+}
+
+// ---------- רשימת התורים ----------
+async function load(date) {
+  currentDate = date;
+  loadPending();
+  $('error').textContent = '';
+  $('list').replaceChildren(el('p', { class: 'empty' }, 'טוענת…'));
+  let data;
+  try { data = await api(`/api/admin/appointments?date=${date}`); }
+  catch (e) { $('list').replaceChildren(); $('error').textContent = e.message; return; }
+  if (currentDate !== date) return;
+
+  const appts = data.appointments;
+  const income = appts.reduce((s, a) => s + a.price, 0);
+  $('day-title').textContent = data.label;
+  const waiting = appts.filter((a) => a.pending).length;
+  $('day-summary').textContent = appts.length
+    ? `${appts.length} תורים · ${income} ₪${waiting ? ` · ${waiting} מחכות לאישור` : ''}` : '';
+
+  // תזכורות רלוונטיות רק למחר, ורק לתורים שאושרו
+  const isTomorrow = date === isoDaysFromToday(1);
+  const remindable = appts.filter((a) => a.whatsapp_url);
+  const sent = remindable.filter((a) => a.reminder_sent).length;
+  $('banner').hidden = !(isTomorrow && remindable.length);
+  $('banner').className = 'banner' + (sent === remindable.length ? ' done' : '');
+  $('banner').textContent = sent === remindable.length
+    ? `כל התזכורות למחר נשלחו (${sent} מתוך ${remindable.length}).`
+    : `תזכורות למחר: נשלחו ${sent} מתוך ${remindable.length}. לחצי על "שליחת תזכורת" ליד כל לקוחה, וואטסאפ ייפתח עם הודעה מוכנה. רק ללחוץ שלח.`;
+
+  // שעות העבודה של היום
+  $('day-hours').replaceChildren(...(data.windows.length
+    ? ['שעות עבודה: ', ...rangesNodes(data.windows)]
+    : ['היום הזה סגור ללקוחות']));
+
+  // תורים, חסימות וזמן פנוי - ברשימה אחת לפי השעה
+  const items = [
+    ...appts.map((a) => ({ t: a.start, node: () => renderAppt(a, isTomorrow) })),
+    ...data.blocks.map((b) => ({ t: b.start, node: () => renderBlock(b) })),
+    ...data.gaps.map((g) => ({ t: g.start, node: () => el('div', { class: 'gap-row' },
+      el('span', {}, 'פנוי ללקוחות'), el('span', { dir: 'ltr' }, `${g.start}–${g.end}`)) })),
+  ].sort((x, y) => (x.t < y.t ? -1 : 1));
+  if (!items.length) { $('list').replaceChildren(el('p', { class: 'empty' }, 'אין תורים ביום הזה.')); return; }
+  $('list').replaceChildren(...items.map((i) => i.node()));
+}
+
+function renderAppt(a, isTomorrow, { showDate = false } = {}) {
+  const actions = [];
+  const card = el('article', { class: 'appt', 'aria-label': `${a.start} ${a.name}` });
+  if (a.pending) {
+    actions.push(el('button', { class: 'btn approve', type: 'button', onclick: () => approve(a) }, 'אישור התור ✓'));
+    actions.push(el('button', { class: 'btn danger', type: 'button', onclick: () => decline(a) }, 'דחייה'));
+  } else {
+    if (a.whatsapp_url && isTomorrow) {
+      actions.push(el('button', {
+        class: 'btn' + (a.reminder_sent ? ' sent' : ''), type: 'button',
+        onclick: () => sendReminder(a),
+      }, a.reminder_sent ? '✓ נשלחה (לשלוח שוב)' : 'שליחת תזכורת'));
+    }
+    if (a.whatsapp_url && !isTomorrow) {
+      const chat = a.whatsapp_url.split('?')[0];
+      actions.push(el('a', { class: 'btn ghost', href: chat, target: '_blank', rel: 'noopener' }, 'וואטסאפ'));
+    }
+    actions.push(el('button', { class: 'btn danger', type: 'button', onclick: () => cancel(a) }, 'ביטול תור'));
+  }
+
+  card.append(
+    ...(a.pending && !showDate ? [el('span', { class: 'tag-wait' }, '⏳ מחכה לאישור שלך')] : []),
+    el('div', { class: 'head' },
+      el('span', { class: 'name' }, a.name),
+      el('span', { class: 'time', dir: 'ltr' }, `${a.start}–${a.end}`)),
+    el('div', { class: 'details' },
+      ...(showDate ? [el('b', { style: 'color: var(--text)' }, a.label)] : []),
+      el('span', {}, a.service),
+      ...(a.price != null ? [el('span', {}, `${a.price} ₪`)] : []),
+      ...(a.phone ? [el('a', { href: `tel:${a.phone}`, dir: 'ltr' }, a.phone)] : [])),
+    el('div', { class: 'actions' }, ...actions));
+  return card;
+}
+
+// ---------- בקשות שמחכות לאישור ----------
+async function loadPending() {
+  let data;
+  try { data = await api('/api/admin/pending'); } catch { return; }
+  const list = data.pending;
+  $('pending-title').textContent = `בקשות שמחכות לאישור (${list.length})`;
+  $('pending-title').hidden = !list.length;
+  $('pending-list').replaceChildren(...list.map((p) => renderAppt({ ...p, pending: true }, false, { showDate: true })));
+  $('pending-box').hidden = !list.length && !$('notice-slot').childElementCount;
+}
+
+// אחרי אישור/דחייה: הודעה עם כפתור וואטסאפ להודעה מוכנה ללקוחה
+function showNotice(text, waUrl, off = false) {
+  const n = el('div', { class: 'notice' + (off ? ' off' : '') }, el('span', {}, text),
+    ...(waUrl ? [el('a', { class: 'btn' + (off ? ' ghost' : ' approve'), href: waUrl, target: '_blank', rel: 'noopener',
+      onclick: () => setTimeout(() => n.remove(), 300) }, 'לשלוח לה הודעה בוואטסאפ')] : []),
+    el('button', { type: 'button', class: 'link-add muted', onclick: () => { n.remove(); loadPending(); } }, 'סגירה'));
+  $('notice-slot').replaceChildren(n);
+  $('pending-box').hidden = false;
+  $('pending-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function approve(a) {
+  try {
+    const res = await api(`/api/admin/appointments/${a.id}/confirm`, {});
+    showNotice(`✓ התור של ${a.name} אושר. הלקוחה תראה את זה בקישור שלה.`, res.whatsapp_url);
+    load(currentDate);
+  } catch (e) { $('error').textContent = e.message; }
+}
+
+async function decline(a) {
+  if (!confirm(`לדחות את הבקשה של ${a.name} (${a.label || ''} ${a.start})?\nהשעה תתפנה לאחרות.`)) return;
+  try {
+    const res = await api(`/api/admin/appointments/${a.id}/cancel`, {});
+    showNotice(`הבקשה של ${a.name} נדחתה.`, res.whatsapp_url, true);
+    load(currentDate);
+  } catch (e) { $('error').textContent = e.message; }
+}
+
+function renderBlock(b) {
+  return el('div', { class: 'block-row' },
+    el('div', { class: 'info' },
+      el('b', { dir: 'ltr', style: 'text-align: right' }, `${b.start}–${b.end}`),
+      el('span', {}, b.note ? `חסום · ${b.note}` : 'חסום')),
+    el('button', { type: 'button', onclick: () => deleteBlock(b) }, 'הסרה'));
+}
+
+async function deleteBlock(b) {
+  if (!confirm(`להסיר את החסימה ${b.start}–${b.end}? הזמן יחזור להיות פנוי ללקוחות.`)) return;
+  try { await api(`/api/admin/blocks/${b.id}/delete`, {}); load(currentDate); }
+  catch (e) { $('error').textContent = e.message; }
+}
+
+// --- טופס חסימת זמן ---
+$('open-block').addEventListener('click', () => {
+  $('blk-error').textContent = '';
+  $('blk-from').value = '12:00'; $('blk-to').value = '13:00'; $('blk-note').value = '';
+  $('block-form').hidden = false; $('add-form').hidden = true;
+  $('blk-note').focus();
+});
+$('blk-cancel').addEventListener('click', () => { $('block-form').hidden = true; });
+$('block-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('blk-error').textContent = '';
+  $('blk-save').disabled = true;
+  try {
+    await api('/api/admin/blocks', { date: currentDate, start: $('blk-from').value, end: $('blk-to').value, note: $('blk-note').value.trim() });
+    $('block-form').hidden = true;
+    load(currentDate);
+  } catch (err) { $('blk-error').textContent = err.message; }
+  finally { $('blk-save').disabled = false; }
+});
+
+// פתיחת יום מסוים בלשונית "תורים" (מיומן הזמינות)
+function openDay(date) {
+  if (date === isoDaysFromToday(0)) currentOffset = 0;
+  else if (date === isoDaysFromToday(1)) currentOffset = 1;
+  else { currentOffset = 'custom'; $('date').value = date; }
+  showSection('appts');
+}
+
+async function sendReminder(a) {
+  // פותחים קודם את וואטסאפ (חייב לקרות מיד בלחיצה, אחרת הדפדפן חוסם חלון חדש), ואז מסמנים
+  window.open(a.whatsapp_url, '_blank', 'noopener');
+  try {
+    await api(`/api/admin/appointments/${a.id}/reminded`, {});
+    load(currentDate);
+  } catch (e) { $('error').textContent = e.message; }
+}
+
+async function cancel(a) {
+  if (!confirm(`לבטל את התור של ${a.name} בשעה ${a.start}?\nהשעה תתפנה לאחרות.`)) return;
+  try {
+    const res = await api(`/api/admin/appointments/${a.id}/cancel`, {});
+    showNotice(`התור של ${a.name} בוטל.`, res.whatsapp_url, true);
+    load(currentDate);
+  } catch (e) { $('error').textContent = e.message; }
+}
+
+// ---------- הוספת תור ידנית ----------
+let info = null;
+
+async function openAddForm() {
+  $('add-error').textContent = '';
+  $('block-form').hidden = true;
+  if (!info) {
+    try { info = await api('/api/info'); }
+    catch (e) { $('error').textContent = e.message; return; }
+    $('add-service').replaceChildren(...info.services.map((s) =>
+      el('option', { value: String(s.id) }, s.name)));
+    $('add-addon').replaceChildren(...Array.from({ length: (info.max_addon || 10) + 1 }, (_, n) =>
+      el('option', { value: String(n) }, n === 0 ? 'בלי' : String(n))));
+    $('add-date').min = info.today;
+    $('add-date').max = info.last_day;
+  }
+  $('add-date').value = currentDate >= info.today ? currentDate : info.today;
+  $('add-addon').value = '0';
+  $('add-name').value = ''; $('add-phone').value = '';
+  $('open-add').hidden = true; $('add-form').hidden = false;
+  await loadAddSlots();
+  $('add-name').focus();
+}
+
+// השעות הפנויות תלויות בטיפול, בתאריך ובמספר ההשלמות - מתעדכנות בכל שינוי
+async function loadAddSlots() {
+  const date = $('add-date').value;
+  const previous = $('add-time').value;               // לשמור את השעה שנבחרה, אם היא עדיין פנויה
+  $('add-time').replaceChildren(el('option', { value: '' }, 'טוענת…'));
+  if (!date) { $('add-time').replaceChildren(el('option', { value: '' }, 'בחרי תאריך')); return; }
+  try {
+    const { slots } = await api(`/api/slots?service_id=${$('add-service').value}&date=${date}&addon=${$('add-addon').value}`);
+    $('add-time').replaceChildren(...(slots.length
+      ? slots.map((t) => el('option', { value: t }, t))
+      : [el('option', { value: '' }, 'אין שעות פנויות')]));
+    if (previous && slots.includes(previous)) $('add-time').value = previous;
+    else if (previous && slots.length) $('add-error').textContent = `השעה ${previous} כבר לא מתאימה, בחרי שעה אחרת`;
+  } catch (e) {
+    $('add-time').replaceChildren(el('option', { value: '' }, '—'));
+    $('add-error').textContent = e.message;
+  }
+}
+
+function closeAddForm() { $('add-form').hidden = true; $('open-add').hidden = false; }
+
+$('open-add').addEventListener('click', openAddForm);
+$('add-cancel').addEventListener('click', closeAddForm);
+['add-service', 'add-date', 'add-addon'].forEach((id) => $(id).addEventListener('change', () => { $('add-error').textContent = ''; loadAddSlots(); }));
+$('add-time').addEventListener('change', () => { $('add-error').textContent = ''; });
+
+$('add-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('add-error').textContent = '';
+  if (!$('add-time').value) { $('add-error').textContent = 'צריך לבחור שעה'; return; }
+  if ($('add-name').value.trim().length < 2) { $('add-error').textContent = 'צריך שם של לקוחה'; $('add-name').focus(); return; }
+  $('add-save').disabled = true;
+  try {
+    const date = $('add-date').value;
+    await api('/api/admin/appointments', {
+      service_id: Number($('add-service').value), date, time: $('add-time').value,
+      addon: Number($('add-addon').value), name: $('add-name').value.trim(), phone: $('add-phone').value.trim(),
+    });
+    closeAddForm();
+    // עוברים ליום של התור החדש, כדי לראות אותו ברשימה
+    if (date === isoDaysFromToday(0)) selectTab(0);
+    else if (date === isoDaysFromToday(1)) selectTab(1);
+    else { $('date').value = date; selectTab('custom'); }
+  } catch (err) {
+    $('add-error').textContent = err.message;
+    if (err.message.includes('לא פנויה')) loadAddSlots();
+  } finally {
+    $('add-save').disabled = false;
+  }
+});
+
+// ---------- שעות פעילות ----------
+// שעות: כל שעה ביום, עד הדקה (00:00–23:59). שומרים את הזמן כ"דקות מחצות" כשצריך לחשב.
+const LAST_MIN = 23 * 60 + 59;
+const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
+const toTime = (m) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`;
+const shiftTime = (t, minutes) => toTime(Math.max(0, Math.min(LAST_MIN, toMin(t) + minutes)));
+
+// שדה שעה חופשי (בטלפון נפתח גלגל של שעות ודקות)
+function timeSelect(value, label) {
+  const input = el('input', { type: 'time', step: '60', 'aria-label': label, dir: 'ltr' });
+  input.value = value || '09:00';
+  return input;
+}
+
+// שורת "משעה – עד שעה" עם כפתור הסרה. read() מחזיר {open, close}
+function rangeRow(from, to, labelFrom, labelTo, onRemove) {
+  const a = timeSelect(from, labelFrom), b = timeSelect(to, labelTo);
+  const row = el('div', { class: 'times' }, a, el('span', {}, '–'), b,
+    el('button', { class: 'rm', type: 'button', 'aria-label': 'הסרה', onclick: () => onRemove(row) }, '×'));
+  row.read = () => ({ open: a.value, close: b.value });
+  return row;
+}
+
+async function loadHours() {
+  $('week-error').textContent = ''; $('week-ok').textContent = '';
+  let data;
+  try { data = await api('/api/admin/hours'); } catch (e) { $('week-error').textContent = e.message; return; }
+  document.querySelectorAll('input[name=unset]').forEach((r) => { r.checked = r.value === data.unset_days; });
+  $('until-date').value = data.booking_until;
+  $('until-date').min = data.today;
+  $('week').replaceChildren(...data.weekly.map(renderWeekDay));
+  loadPeriods();
+}
+
+function renderWeekDay(d) {
+  const box = el('input', { type: 'checkbox' });
+  box.checked = !!d.open;
+  const from = timeSelect(d.open || '09:00', `יום ${d.name} משעה`);
+  const to = timeSelect(d.close || '19:00', `יום ${d.name} עד שעה`);
+  const times = el('div', { class: 'times' });
+  const breaks = el('div', { class: 'breaks' });
+  const addBtn = el('button', { class: 'link-add', type: 'button', onclick: () => addBreak('13:00', '14:00') }, '+ הפסקה');
+  breaks.append(addBtn);
+  // הפסקה חדשה נכנסת לפני כפתור ההוספה, כדי שהכפתור תמיד יהיה אחרון
+  const addBreak = (start, end) => breaks.insertBefore(rangeRow(start, end, `הפסקה ביום ${d.name} משעה`, 'עד שעה', (r) => r.remove()), addBtn);
+  (d.breaks || []).forEach((b) => addBreak(b.start, b.end));
+  const render = () => {
+    times.replaceChildren(...(box.checked ? [from, el('span', {}, '–'), to] : [el('span', { class: 'closed' }, 'סגור')]));
+    breaks.hidden = !box.checked;
+  };
+  box.addEventListener('change', render);
+  render();
+
+  const wrap = el('div', { class: 'week-day' },
+    el('div', { class: 'week-row' }, el('label', { class: 'day' }, box, d.name), times), breaks);
+  wrap.read = () => (box.checked
+    ? { weekday: d.weekday, open: from.value, close: to.value,
+        breaks: [...breaks.querySelectorAll('.times')].map((r) => { const x = r.read(); return { start: x.open, end: x.close }; }) }
+    : { weekday: d.weekday, closed: true });
+  return wrap;
+}
+
+$('week-save').addEventListener('click', async () => {
+  $('week-error').textContent = ''; $('week-ok').textContent = '';
+  const weekly = [...$('week').children].map((row) => row.read());
+  $('week-save').disabled = true;
+  try {
+    await api('/api/admin/hours', { weekly });
+    $('week-ok').textContent = '✓ נשמר. מעכשיו לקוחות יראו את השעות החדשות.';
+  } catch (e) { $('week-error').textContent = e.message; }
+  finally { $('week-save').disabled = false; }
+});
+
+document.querySelectorAll('input[name=unset]').forEach((r) => r.addEventListener('change', async () => {
+  $('unset-ok').textContent = '';
+  try { await api('/api/admin/settings', { unset_days: r.value }); $('unset-ok').textContent = '✓ נשמר'; }
+  catch (e) { $('week-error').textContent = e.message; }
+}));
+
+// --- עד מתי אפשר לקבוע ---
+$('until-save').addEventListener('click', async () => {
+  $('until-error').textContent = ''; $('until-ok').textContent = '';
+  try {
+    await api('/api/admin/booking-until', { date: $('until-date').value });
+    $('until-ok').textContent = '✓ נשמר';
+  } catch (e) { $('until-error').textContent = e.message; }
+});
+
+// --- ימים מיוחדים וחופשות ---
+async function loadPeriods() {
+  $('periods-error').textContent = '';
+  let data;
+  try { data = await api('/api/admin/periods'); } catch (e) { $('periods-error').textContent = e.message; return; }
+  if (!data.periods.length) {
+    $('periods').replaceChildren(el('p', { class: 'note', style: 'margin: 0' }, 'אין כרגע ימים מיוחדים. כל הימים לפי השעות הקבועות.'));
+    return;
+  }
+  $('periods').replaceChildren(...data.periods.map((p) => {
+    const hours = p.windows.map((w) => `${w.open}–${w.close}`).join(', ');
+    return el('div', { class: 'period' },
+      el('div', { class: 'info' },
+        el('b', {}, p.label),
+        el('span', { dir: 'auto' }, p.closed ? (p.note || 'סגור') : `${hours}${p.note ? ' · ' + p.note : ''}`)),
+      el('span', { class: 'tag' + (p.closed ? ' closed' : '') }, p.closed ? 'סגור' : 'שעות מיוחדות'),
+      el('button', { class: 'del', type: 'button', 'aria-label': `מחיקת ${p.label}`, onclick: () => deletePeriod(p) }, 'מחיקה'));
+  }));
+}
+
+async function deletePeriod(p) {
+  if (!confirm(`להחזיר את ${p.label} לשעות הרגילות?`)) return;
+  try {
+    await api('/api/admin/day', { date: p.from, until: p.until, mode: 'regular' });
+    $('day-ok').textContent = '✓ חזר לשעות הרגילות';
+    loadPeriods();
+  } catch (e) { $('periods-error').textContent = e.message; }
+}
+
+let dayMode = 'closed';
+function setMode(mode) {
+  dayMode = mode;
+  document.querySelectorAll('.mode').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  $('custom-box').hidden = mode !== 'custom';
+  if (mode === 'custom' && !$('windows').children.length) addWindow('09:00', '19:00');
+}
+document.querySelectorAll('.mode').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+function addWindow(open, close) {
+  $('windows').append(rangeRow(open, close, 'משעה', 'עד שעה', (r) => { if ($('windows').children.length > 1) r.remove(); }));
+}
+$('add-window').addEventListener('click', () => {
+  const last = [...$('windows').children].pop();
+  const start = last ? last.read().close : '16:00';
+  addWindow(shiftTime(start, 60), shiftTime(start, 240));
+});
+
+$('open-period').addEventListener('click', () => {
+  $('day-ok').textContent = ''; $('day-error').textContent = ''; $('day-warn').hidden = true;
+  $('day-date').value = isoDaysFromToday(1); $('day-until').value = ''; $('day-note').value = '';
+  $('windows').replaceChildren(); setMode('closed');
+  $('period-form').hidden = false; $('open-period').hidden = true;
+  describeDay();
+});
+$('day-cancel').addEventListener('click', () => { $('period-form').hidden = true; $('open-period').hidden = false; });
+$('day-date').addEventListener('change', describeDay);
+
+// מה המצב כרגע בתאריך שנבחר (שעות ותורים) - כדי שיובל תדע מה היא משנה
+async function describeDay() {
+  const date = $('day-date').value;
+  if (!date) { $('day-status').textContent = ''; return; }
+  try {
+    const d = await api(`/api/admin/day?date=${date}`);
+    const what = d.windows.length ? d.windows.map((w) => `${w.open}–${w.close}`).join(', ') : 'סגור';
+    $('day-status').replaceChildren(el('b', {}, d.label), ' · כרגע: ',
+      el('span', { dir: 'ltr', style: 'white-space: nowrap' }, what), d.appointments ? ` · ${d.appointments} תורים` : '');
+  } catch (e) { $('day-status').textContent = e.message; }
+}
+
+$('day-save').addEventListener('click', async () => {
+  $('day-error').textContent = ''; $('day-ok').textContent = ''; $('day-warn').hidden = true;
+  if (!$('day-date').value) { $('day-error').textContent = 'צריך לבחור תאריך'; return; }
+  const body = { date: $('day-date').value, mode: dayMode, note: $('day-note').value.trim() };
+  if ($('day-until').value) body.until = $('day-until').value;
+  if (dayMode === 'custom') body.windows = [...$('windows').children].map((r) => r.read());
+  $('day-save').disabled = true;
+  try {
+    const res = await api('/api/admin/day', body);
+    $('period-form').hidden = true; $('open-period').hidden = false;
+    await loadPeriods();
+    $('day-ok').textContent = '✓ נשמר';
+    if (res.outside.length) {
+      $('day-warn').hidden = false;
+      $('day-ok').after($('day-warn'));
+      $('day-warn').replaceChildren('שימי לב: יש תורים שלא נכנסים בשעות החדשות. הם לא בוטלו, כדאי לתאם עם הלקוחות:',
+        ...res.outside.map((x) => el('div', {}, '• ' + x)));
+    }
+  } catch (e) { $('day-error').textContent = e.message; }
+  finally { $('day-save').disabled = false; }
+});
+
+// ---------- יומן זמינות ----------
+const PRESETS = [
+  { key: 'full', name: 'יום מלא', windows: [{ open: '09:00', close: '19:00' }] },
+  { key: 'morning', name: 'בוקר', windows: [{ open: '09:00', close: '14:00' }] },
+  { key: 'evening', name: 'אחה״צ', windows: [{ open: '14:00', close: '19:00' }] },
+  { key: 'closed', name: 'סגור', windows: [] },
+];
+const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const WEEK_NAMES = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+let avMonth = null, avData = null, selDay = null;
+
+// משווים לפי השעות עצמן ולא לפי JSON, כי השרת מחזיר את המפתחות בסדר אחר (close לפני open)
+const sameWindows = (a, b) => a.length === b.length && a.every((w, i) => w.open === b[i].open && w.close === b[i].close);
+const shortHours = (ws) => ws.map((w) => `${Number(w.open.slice(0, 2))}${w.open.slice(3) === '00' ? '' : ':' + w.open.slice(3)}–${Number(w.close.slice(0, 2))}${w.close.slice(3) === '00' ? '' : ':' + w.close.slice(3)}`).join(',');
+function rangesNodes(ws) {
+  const out = [];
+  ws.forEach((w, i) => { if (i) out.push(' ואז '); out.push(el('span', { dir: 'ltr' }, `${w.open}–${w.close}`)); });
+  return out;
+}
+function dayLabelHe(iso) { const d = new Date(iso + 'T12:00'); return `יום ${WEEK_NAMES[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}`; }
+function shiftMonthIso(m, n) { const [y, mo] = m.split('-').map(Number); const d = new Date(y, mo - 1 + n, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; }
+function addDaysIso(iso, n) { const d = new Date(iso + 'T12:00'); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+
+async function loadAvail(month) {
+  avMonth = month;
+  $('av-error').textContent = '';
+  const [y, m] = month.split('-').map(Number);
+  $('av-title').textContent = `${MONTH_NAMES[m - 1]} ${y}`;
+  $('av-prev').disabled = month <= isoDaysFromToday(0).slice(0, 7);
+  $('av-next').disabled = month >= shiftMonthIso(isoDaysFromToday(0).slice(0, 7), 12);
+  try { avData = await api(`/api/admin/availability?month=${month}`); }
+  catch (e) { $('av-error').textContent = e.message; return; }
+  if (avMonth !== month) return;
+  renderAvail();
+}
+$('av-prev').addEventListener('click', () => loadAvail(shiftMonthIso(avMonth, -1)));
+$('av-next').addEventListener('click', () => loadAvail(shiftMonthIso(avMonth, 1)));
+
+function renderAvail() {
+  const closedMode = avData.mode === 'closed';
+  $('legend-unset').hidden = !closedMode;
+  // פס עליון: עד מתי הימים פתוחים
+  if (closedMode) {
+    const until = avData.open_until;
+    const daysAhead = until ? Math.round((new Date(until + 'T12:00') - new Date(avData.today + 'T12:00')) / 86400000) : -1;
+    $('avail-banner').hidden = false;
+    $('avail-banner').className = 'avail-banner ' + (daysAhead < 21 ? 'warn-c' : 'ok-c');
+    $('avail-banner').textContent = until
+      ? `קבעת שעות עד ${avData.open_until_label}. לקוחות לא יכולות לקבוע אחרי התאריך הזה.`
+      : 'עוד לא קבעת שעות להיום. לקוחות לא יכולות לקבוע תור עד שתפתחי ימים.';
+  } else {
+    $('avail-banner').hidden = true;
+  }
+
+  const firstDow = new Date(avData.days[0].date + 'T12:00').getDay();
+  const blanks = Array.from({ length: firstDow }, () => el('span', { 'aria-hidden': 'true' }));
+  $('av-grid').replaceChildren(...blanks, ...avData.days.map((d) => {
+    const num = String(Number(d.date.slice(8)));
+    let cls = 'av-day', label = '';
+    if (d.past) { label = ''; }
+    else if (closedMode && !d.set) { cls += ' unset'; label = '—'; }
+    else if (!d.windows.length) { cls += ' closed'; label = 'סגור'; }
+    else {
+      const full = sameWindows(d.windows, PRESETS[0].windows);
+      cls += d.set ? (full ? ' full' : ' part') : ' weekly';
+      label = shortHours(d.windows);
+    }
+    if (selDay === d.date && !$('sheet').hidden) cls += ' sel';
+    const what = d.past ? 'עבר' : (closedMode && !d.set) ? 'עוד לא נקבע' : d.windows.length ? label : 'סגור';
+    if (label.includes(',')) cls += ' split';
+    return el('button', {
+      class: cls, type: 'button', 'data-date': d.date,
+      'aria-label': `${dayLabelHe(d.date)}, ${what}${d.appointments ? `, ${d.appointments} תורים` : ''}`,
+      ...(d.past ? { disabled: '' } : {}),
+      onclick: () => openSheet(d.date),
+    },
+      ...(d.appointments && !d.past ? [el('span', { class: 'cnt' }, String(d.appointments))] : []),
+      el('span', { class: 'n' }, num),
+      ...(label.includes(',')
+        ? label.split(',').slice(0, 2).map((part) => el('span', { class: 'h2', dir: 'ltr' }, part))
+        : [el('span', { class: 'h', dir: 'ltr' }, label)]));
+  }));
+}
+
+// --- החלונית התחתונה ---
+function openSheet(date) {
+  selDay = date;
+  loadSheetBusy(date);
+  $('sheet-error').textContent = ''; $('sheet-warn').hidden = true;
+  $('sheet-custom').hidden = true;
+  $('sheet-custom-toggle').setAttribute('aria-expanded', 'false');
+  renderSheet();
+  $('sheet').hidden = false; $('sheet-backdrop').hidden = false;
+  renderAvail();
+  renderTimeline();
+  $('sheet-close').focus();
+}
+function closeSheet() {
+  $('sheet').hidden = true; $('sheet-backdrop').hidden = true;
+  if (avData) renderAvail();
+}
+$('sheet-close').addEventListener('click', closeSheet);
+$('sheet-backdrop').addEventListener('click', closeSheet);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('sheet').hidden) closeSheet(); });
+
+function renderSheet() {
+  const d = avData.days.find((x) => x.date === selDay);
+  const closedMode = avData.mode === 'closed';
+  $('sheet-title').textContent = dayLabelHe(selDay);
+  const extra = [d.appointments ? `${d.appointments} תורים` : '', d.blocks ? `${d.blocks} חסימות` : ''].filter(Boolean).join(' · ');
+  $('sheet-status').replaceChildren(
+    ...((closedMode && !d.set) ? ['עוד לא קבעת שעות ליום הזה']
+      : d.windows.length ? ['פתוח ', ...rangesNodes(d.windows)] : ['סגור']),
+    extra ? ` · ${extra}` : '');
+  $('presets').replaceChildren(...PRESETS.map((p) => {
+    const on = d.set && sameWindows(d.windows, p.windows);      // מסומן רק אם יובל בחרה בדיוק את זה
+    return el('button', {
+      type: 'button', class: 'preset' + (p.key === 'closed' ? ' closed' : ''), 'aria-pressed': String(on),
+      onclick: () => saveDay(p.windows.length ? { mode: 'custom', windows: p.windows } : { mode: 'closed' }),
+    }, el('b', {}, p.name), el('span', { dir: 'ltr' }, p.windows.length ? `${p.windows[0].open}–${p.windows[0].close}` : 'לא עובדת'));
+  }));
+  $('sheet-reset').hidden = !d.set;
+  $('sheet-reset').textContent = closedMode ? 'ביטול ההגדרה (חזרה ל"עוד לא נקבע")' : 'חזרה לשעות הקבועות';
+  // שעות מותאמות: מתחילים מהשעות הנוכחיות של היום (או 9–14, הכי נפוץ לפני הפסקה)
+  $('sheet-windows').replaceChildren();
+  (d.windows.length ? d.windows : [{ open: '09:00', close: '14:00' }]).forEach((w) => addSheetWindow(w.open, w.close));
+  // יום שסודר "בעצמי" (לא אחד מהכפתורים): מסמנים את האפשרות ופותחים את העורך
+  const isCustom = d.set && d.windows.length && !PRESETS.some((p) => sameWindows(d.windows, p.windows));
+  $('sheet-custom-toggle').setAttribute('aria-pressed', String(!!isCustom));
+  if (isCustom) { $('sheet-custom').hidden = false; $('sheet-custom-toggle').setAttribute('aria-expanded', 'true'); }
+  updatePreview();
+}
+
+// ---------- ציר הזמן של כל היום ----------
+const DAY_MIN = 24 * 60;
+const SNAP = 15;                // בגרירה השעות "נתפסות" לרבע שעה; לדיוק עד הדקה משנים בשדות
+let sheetBusy = { date: null, items: [] }, tlDrag = null;
+
+// התורים והחסימות של היום, כדי שיובל תראה מה כבר תפוס כשהיא מסדרת שעות
+async function loadSheetBusy(date) {
+  sheetBusy = { date, items: [] };
+  try {
+    const data = await api(`/api/admin/appointments?date=${date}`);
+    if (selDay !== date) return;
+    sheetBusy.items = [
+      ...data.appointments.map((a) => ({ start: a.start, end: a.end, kind: a.pending ? 'pending' : 'appt', label: a.name })),
+      ...data.blocks.map((b) => ({ start: b.start, end: b.end, kind: 'block', label: b.note || 'חסימה' })),
+    ];
+  } catch { /* הציר יעבוד גם בלי זה */ }
+  renderTimeline();
+}
+
+const customOpen = () => !$('sheet-custom').hidden;
+const sheetRows = () => [...$('sheet-windows').querySelectorAll('.times')];
+const validWindow = (w) => w.open && w.close && w.open < w.close;
+// מה שמוצג בציר: הטיוטה שבעריכה (אם העורך פתוח), אחרת מה ששמור
+function shownWindows() {
+  if (customOpen()) return sheetRows().map((r, i) => ({ ...r.read(), row: i })).filter(validWindow);
+  const d = avData && avData.days.find((x) => x.date === selDay);
+  return d ? d.windows.map((w) => ({ ...w })) : [];
+}
+const pct = (m) => `${(m / DAY_MIN) * 100}%`;
+function place(node, from, to) { node.style.left = pct(from); node.style.width = pct(Math.max(to - from, 2)); return node; }
+
+function renderTimeline() {
+  if ($('sheet').hidden) return;
+  const track = $('tl-track');
+  const ws = shownWindows();
+  const nodes = ws.map((w) => {
+    const n = place(el('div', { class: 'tl-open' + (customOpen() ? ' draft' : ''), title: `${w.open}–${w.close}` }), toMin(w.open), toMin(w.close));
+    n.dataset.row = w.row ?? '';
+    return n;
+  });
+  sheetBusy.date === selDay && sheetBusy.items.forEach((b) =>
+    nodes.push(place(el('div', { class: 'tl-busy ' + b.kind, title: `${b.start}–${b.end} ${b.label}` }), toMin(b.start), toMin(b.end))));
+  if (selDay === isoDaysFromToday(0)) {
+    const now = new Date();
+    nodes.push(place(el('div', { class: 'tl-now' }), now.getHours() * 60 + now.getMinutes(), 0));
+  }
+  if (tlDrag && tlDrag.moved) {
+    const a = Math.min(tlDrag.start, tlDrag.cur), b = Math.min(Math.max(tlDrag.start, tlDrag.cur), LAST_MIN);
+    nodes.push(place(el('div', { class: 'tl-ghost' }, el('b', {}, `${toTime(a)}–${toTime(b)}`)), a, b));
+  }
+  track.replaceChildren(...nodes);
+  track.setAttribute('aria-label', ws.length
+    ? 'פתוח ללקוחות: ' + ws.map((w) => `${w.open} עד ${w.close}`).join(', ') : 'היום סגור ללקוחות');
+}
+$('tl-scale').append(...[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => {
+  const s = el('span', {}, pad(h % 24 === 0 && h ? 24 : h)); s.style.left = pct(h * 60); return s;
+}));
+
+function minuteAt(e) {
+  const r = $('tl-track').getBoundingClientRect();
+  const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  return Math.round((x * DAY_MIN) / SNAP) * SNAP;
+}
+function openCustomEditor(windows) {
+  if (!customOpen()) {
+    $('sheet-custom').hidden = false;
+    $('sheet-custom-toggle').setAttribute('aria-expanded', 'true');
+    $('sheet-windows').replaceChildren();
+    windows.forEach((w) => addSheetWindow(w.open, w.close));
+  }
+}
+// מוסיף טווח, ומאחד אותו עם טווחים שהוא נוגע בהם (09:00–12:00 + 11:00–14:00 = 09:00–14:00)
+function addRange(from, to) {
+  const d = avData.days.find((x) => x.date === selDay);
+  const base = customOpen() ? sheetRows().map((r) => r.read()).filter(validWindow) : d.windows;
+  const all = [...base.map((w) => [toMin(w.open), toMin(w.close)]), [from, Math.min(to, LAST_MIN)]].sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  for (const [a, b] of all) {
+    const last = merged[merged.length - 1];
+    if (last && a <= last[1]) last[1] = Math.max(last[1], b); else merged.push([a, b]);
+  }
+  $('sheet-custom').hidden = false;
+  $('sheet-custom-toggle').setAttribute('aria-expanded', 'true');
+  $('sheet-windows').replaceChildren();
+  merged.forEach(([a, b]) => addSheetWindow(toTime(a), toTime(b)));
+}
+function focusRow(i) {
+  const row = sheetRows()[i];
+  if (!row) return;
+  sheetRows().forEach((r) => r.classList.remove('hl'));
+  row.classList.add('hl');
+  row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  setTimeout(() => row.classList.remove('hl'), 1600);
+}
+
+$('tl-track').addEventListener('pointerdown', (e) => {
+  if (e.button > 0) return;
+  const m = minuteAt(e);
+  const hit = e.target.classList.contains('tl-open') ? e.target : null;
+  tlDrag = { start: m, cur: m, moved: false, hit };
+  $('tl-track').setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+$('tl-track').addEventListener('pointermove', (e) => {
+  if (!tlDrag) return;
+  tlDrag.cur = minuteAt(e);
+  if (Math.abs(tlDrag.cur - tlDrag.start) >= SNAP) tlDrag.moved = true;
+  if (tlDrag.moved) renderTimeline();
+});
+$('tl-track').addEventListener('pointerup', () => {
+  if (!tlDrag) return;
+  const { start, cur, moved, hit } = tlDrag;
+  tlDrag = null;
+  if (moved) addRange(Math.min(start, cur), Math.max(start, cur));
+  else if (hit) {
+    // לחיצה על טווח פתוח: קופצים לשדות שלו כדי לדייק
+    const d = avData.days.find((x) => x.date === selDay);
+    openCustomEditor(d.windows);
+    const idx = hit.dataset.row !== '' ? Number(hit.dataset.row)
+      : d.windows.findIndex((w) => `${w.open}–${w.close}` === hit.title);
+    focusRow(idx);
+  }
+  renderTimeline();
+});
+$('tl-track').addEventListener('pointercancel', () => { tlDrag = null; renderTimeline(); });
+
+function addSheetWindow(open, close) {
+  const box = $('sheet-windows');
+  const row = rangeRow(open, close, 'משעה', 'עד שעה', (r) => {
+    const rows = box.querySelectorAll('.times');
+    if (rows.length <= 1) return;
+    // מסירים את השורה ואת "הפסקה" שלפניה (או אחריה, אם זו הראשונה)
+    const sep = r.previousElementSibling && r.previousElementSibling.classList.contains('break-sep')
+      ? r.previousElementSibling : r.nextElementSibling;
+    if (sep && sep.classList.contains('break-sep')) sep.remove();
+    r.remove();
+    updatePreview();
+  });
+  if (box.querySelector('.times')) box.append(el('div', { class: 'break-sep' }, 'הפסקה'));
+  box.append(row);
+  updatePreview();
+}
+// תצוגה מקדימה: מה הלקוחות יראו, ובדיקה שהשעות הגיוניות
+function updatePreview() {
+  const ws = [...$('sheet-windows').querySelectorAll('.times')].map((r) => r.read());
+  const sorted = [...ws].sort((a, b) => (a.open < b.open ? -1 : 1));
+  let problem = '';
+  for (const w of sorted) if (!w.open || !w.close) problem = 'צריך למלא שעת התחלה ושעת סיום';
+  for (const w of sorted) if (!problem && w.open >= w.close) problem = `בטווח ${w.open}–${w.close} שעת הסיום לפני ההתחלה`;
+  for (let i = 1; i < sorted.length && !problem; i++) {
+    if (sorted[i].open < sorted[i - 1].close) problem = 'יש טווחים שחופפים זה לזה';
+  }
+  $('sheet-preview').className = 'preview' + (problem ? ' bad' : '');
+  $('sheet-preview').replaceChildren(...(problem ? [problem]
+    : ['לקוחות יוכלו לקבוע: ', ...rangesNodes(sorted)]));
+  $('sheet-custom-save').disabled = !!problem;
+  const d = avData && avData.days.find((x) => x.date === selDay);
+  $('sheet-draft').hidden = !(customOpen() && d && !sameWindows(sorted, d.windows));
+  renderTimeline();
+}
+$('sheet-windows').addEventListener('change', updatePreview);
+$('sheet-windows').addEventListener('input', updatePreview);
+
+$('sheet-add-window').addEventListener('click', () => {
+  const rows = [...$('sheet-windows').querySelectorAll('.times')];
+  const last = rows.pop();
+  const end = last ? last.read().close : '14:00';
+  // ברירת מחדל: הפסקה של שעתיים, ואז עוד 3 שעות (למשל 14:00 -> 16:00–19:00)
+  addSheetWindow(shiftTime(end, 120), shiftTime(end, 300));
+});
+$('sheet-custom-toggle').addEventListener('click', () => {
+  const open = $('sheet-custom').hidden;
+  $('sheet-custom').hidden = !open;
+  $('sheet-custom-toggle').setAttribute('aria-expanded', String(open));
+  if (open) $('sheet-custom').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  updatePreview();
+});
+$('sheet-custom-save').addEventListener('click', () =>
+  saveDay({ mode: 'custom', windows: [...$('sheet-windows').querySelectorAll('.times')].map((r) => r.read()) }));
+$('sheet-reset').addEventListener('click', () => saveDay({ mode: 'regular' }));
+$('sheet-day').addEventListener('click', () => { const d = selDay; closeSheet(); openDay(d); });
+
+async function saveDay(body) {
+  $('sheet-error').textContent = ''; $('sheet-warn').hidden = true;
+  try {
+    const res = await api('/api/admin/day', { date: selDay, ...body });
+    await loadAvail(avMonth);
+    renderSheet();
+    showOutside(res.outside, $('sheet-warn'));
+    $('av-ok').textContent = '✓ נשמר';
+  } catch (e) { $('sheet-error').textContent = e.message; }
+}
+
+$('sheet-copy').addEventListener('click', async () => {
+  const dow = new Date(selDay + 'T12:00').getDay();
+  const sunday = addDaysIso(selDay, -dow);
+  const next = addDaysIso(sunday, 7);
+  if (!confirm(`להעתיק את השעות של השבוע ${dayLabelHe(sunday)} – ${dayLabelHe(addDaysIso(sunday, 6))} לשבוע שאחריו?\nהשעות שכבר קבעת בשבוע הבא יוחלפו.`)) return;
+  $('sheet-error').textContent = '';
+  try {
+    const res = await api('/api/admin/copy-week', { from: sunday, to: next });
+    await loadAvail(avMonth);
+    renderSheet();
+    showOutside(res.outside, $('sheet-warn'));
+    $('av-ok').textContent = `✓ השבוע הועתק לשבוע של ${dayLabelHe(next)}`;
+  } catch (e) { $('sheet-error').textContent = e.message; }
+});
+
+function showOutside(list, box) {
+  if (!list || !list.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.replaceChildren('שימי לב: יש תורים שלא נכנסים בשעות החדשות. הם לא בוטלו, כדאי לתאם עם הלקוחות:',
+    ...list.map((x) => el('div', {}, '• ' + x)));
+}
+
+// ---------- הפעלה: אם כבר מחוברת, ישר ליומן ----------
+fetch(`/api/admin/appointments?date=${isoDaysFromToday(1)}`)
+  .then((r) => (r.ok ? showMain() : showLogin()))
+  .catch(showLogin);
+</script>
+</body>
+</html>

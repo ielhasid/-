@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FBF8F5">
+<meta name="theme-color" content="#FFF7FA">
 <title>קביעת תור · yuvalnails</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&family=Parisienne&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FBF8F5;
+    --bg: #FFF7FA;
     --card: #FFFFFF;
-    --text: #5E3833;
-    --muted: #85625C;
-    --line: #EADFD9;
-    --accent: #7A3F8C;
-    --accent-soft: #F1E6F3;
-    --script: #B47CC2;
+    --text: #4A2633;
+    --muted: #8A5C6C;
+    --faint: #CDB0BB;
+    --line: #F3D3DF;
+    --accent: #B83C6E;
+    --accent-soft: #FDE6EF;
+    --script: #C7578A;
     --danger: #A23B3B;
   }
   * { box-sizing: border-box; }
@@ -26,91 +27,141 @@
   a { color: var(--accent); text-decoration: none; }
   button { font-family: inherit; cursor: pointer; }
   button:disabled { cursor: default; }
-  :focus-visible { outline: 3px solid var(--script); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid #E38BB0; outline-offset: 2px; }
 
   .app { max-width: 440px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-  .screen { display: none; flex-direction: column; flex-grow: 1; padding-bottom: 28px; }
+  .screen { display: none; flex-direction: column; flex-grow: 1; padding-bottom: 24px; }
   .screen.active { display: flex; }
 
-  .flower { position: absolute; top: -18px; left: -22px; opacity: .55; pointer-events: none; }
-  header { padding: 44px 24px 0; display: flex; flex-direction: column; gap: 12px; position: relative; }
+  /* ---- כותרות ---- */
+  .hero { padding: 34px 22px 18px; background: var(--accent-soft); border-radius: 0 0 28px 28px; display: flex; flex-direction: column; gap: 10px; }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; }
+  .hero-top a { font-size: 14px; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
   .wordmark { font-family: 'Parisienne', cursive; font-size: 30px; color: var(--script); line-height: 1; }
-  h1 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-weight: 700; font-size: 32px; line-height: 1.1; }
-  .sub { margin: 0; font-size: 17px; color: var(--muted); }
-  .back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; background: none; border: 0; padding: 0; color: var(--accent); font-size: 16px; font-weight: 600; }
+  header { padding: 26px 20px 8px; display: flex; flex-direction: column; gap: 8px; }
+  h1 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-weight: 700; font-size: 30px; line-height: 1.15; }
+  .hero h1 { font-size: 32px; margin-top: 4px; }
+  .title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .title-row small { font-size: 13px; color: var(--muted); padding-bottom: 6px; white-space: nowrap; }
+  .sub { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.5; }
+  .back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; width: fit-content; background: none; border: 0; padding: 0; color: var(--accent); font-size: 15px; font-weight: 700; }
 
   .steps { display: flex; align-items: center; gap: 10px; }
-  .steps .bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex-grow: 1; }
-  .steps .bars span { height: 4px; border-radius: 4px; background: #E8DCD6; }
+  .steps .bars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; flex-grow: 1; }
+  .steps .bars span { height: 5px; border-radius: 3px; background: var(--line); }
   .steps .bars span.on { background: var(--accent); }
-  .steps small { font-size: 13px; color: var(--muted); }
+  .steps small { font-size: 13px; color: var(--muted); white-space: nowrap; }
 
-  .services { padding: 20px 20px 0; display: flex; flex-direction: column; gap: 12px; }
-  .service { display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; color: var(--text); text-align: right; width: 100%; transition: border-color .15s, box-shadow .15s; }
-  .service:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(122, 63, 140, .10); }
-  .service .name { display: block; font-size: 18px; font-weight: 700; }
+  /* ---- מסך 1: טיפולים ---- */
+  .services { padding: 4px 20px 0; display: flex; flex-direction: column; gap: 18px; }
+  .svc-group { display: flex; flex-direction: column; gap: 8px; }
+  .svc-group h2 { margin: 0; font-size: 14px; font-weight: 700; color: var(--muted); letter-spacing: .3px; }
+  .service { width: 100%; min-height: 64px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); color: var(--text); text-align: right; transition: border-color .15s, box-shadow .15s; }
+  .service:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(184, 60, 110, .14); }
+  .service .name { display: block; font-size: 17px; font-weight: 700; }
+  .service .go { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: var(--accent-soft); color: var(--accent); transition: background .15s, color .15s; }
+  .service:hover .go { background: var(--accent); color: #FFF; }
   .meta { display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--muted); margin-top: 4px; }
-  .service .body { flex-grow: 1; }
-  .price { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .foot-note { margin-top: auto; padding: 22px 22px 0; font-size: 14px; color: var(--muted); text-align: center; }
 
-  .chip { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 14px; background: var(--accent-soft); border-radius: 12px; font-size: 15px; }
+  .chip { display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 14px; background: var(--accent-soft); border-radius: 16px; font-size: 14px; }
   .chip b { font-weight: 700; }
 
-  .section-title { font-size: 15px; font-weight: 700; padding: 0 4px; margin: 0; }
-  .days-wrap { padding: 22px 0 0; display: flex; flex-direction: column; gap: 12px; }
-  .days-wrap .section-title { padding: 0 24px; }
-  .days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; scrollbar-width: none; }
-  .days::-webkit-scrollbar { display: none; }
-  .days::before, .days::after { content: ''; flex: 0 0 12px; }  /* רווח בקצוות של שורה נגללת */
-  .day { flex: 0 0 56px; height: 68px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); scroll-snap-align: start; padding: 0; }
-  .day small { font-size: 13px; }
-  .day strong { font-size: 19px; }
-  .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
-  .day:disabled { background: transparent; border-style: dashed; color: #B9A39E; }
+  /* ---- מסך 2: יומן ושעות ---- */
+  .cal { margin: 6px 16px 0; padding: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; display: flex; flex-direction: column; gap: 6px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; }
+  .cal-head h2 { margin: 0; font-family: 'Frank Ruhl Libre', serif; font-size: 20px; font-weight: 700; }
+  .cal-nav { width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); color: var(--accent); display: flex; align-items: center; justify-content: center; padding: 0; }
+  .cal-nav:disabled { color: #E8C9D5; border-color: #F7E6EC; }
+  .cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .cal-week span { text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); padding: 2px 0; }
+  .cal-day { height: 42px; border-radius: 13px; border: 1px solid transparent; background: transparent; color: var(--faint); font-size: 15px; font-weight: 400; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .cal-day.available { background: #FFF0F5; border-color: var(--line); color: var(--text); font-weight: 700; }
+  .cal-day.available:hover { border-color: var(--accent); }
+  .cal-day.none { text-decoration: line-through; }
+  .cal-day.today { box-shadow: inset 0 0 0 1.5px #E38BB0; }
+  .cal-day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; font-weight: 700; }
+  .cal-legend { display: flex; gap: 14px; justify-content: center; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+  .cal-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-inline-end: 4px; vertical-align: -1px; }
+  .cal-legend s { color: var(--faint); margin-inline-end: 4px; }
 
-  .slots { padding: 22px 20px 0; display: flex; flex-direction: column; gap: 14px; }
-  .group { display: flex; flex-direction: column; gap: 8px; }
-  .group > span { font-size: 13px; color: var(--muted); padding: 0 4px; }
-  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .slot { min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 16px; font-weight: 600; }
+  .slots { padding: 14px 20px 0; display: flex; flex-direction: column; gap: 10px; }
+  .section-title { font-size: 16px; font-weight: 700; margin: 0; }
+  .group { display: flex; align-items: flex-start; gap: 10px; }
+  .group > span { width: 54px; flex: 0 0 54px; font-size: 13px; color: var(--muted); padding-top: 13px; }
+  .grid { display: flex; gap: 6px; flex-wrap: wrap; }
+  .slot { min-height: 44px; min-width: 74px; padding: 0 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 16px; font-weight: 700; }
+  .slot:hover { border-color: var(--accent); }
   .slot[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF; }
-  .empty { color: var(--muted); font-size: 15px; padding: 8px 4px; }
+  .empty { color: var(--muted); font-size: 15px; padding: 8px 4px; margin: 0; }
 
-  .bottom-bar { position: sticky; bottom: 0; margin-top: auto; padding: 14px 20px calc(18px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); display: flex; align-items: center; gap: 14px; }
+  .bottom-bar { position: sticky; bottom: 0; margin-top: auto; margin-bottom: -24px; padding: 14px 20px calc(22px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
   .bottom-bar .summary { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
   .bottom-bar .summary small { font-size: 13px; color: var(--muted); }
   .bottom-bar .summary strong { font-size: 17px; }
 
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 0 28px; border-radius: 27px; border: 0; background: var(--accent); color: #FFF; font-size: 17px; font-weight: 700; }
-  .btn:disabled { background: #CDB8D3; }
-  .btn.ghost { background: var(--card); color: var(--accent); border: 1.5px solid #DCCCC6; font-weight: 600; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 28px; border-radius: 26px; border: 0; background: var(--accent); color: #FFF; font-size: 17px; font-weight: 700; }
+  .btn:disabled { background: #EBB7CB; }
+  .btn.ghost { background: var(--card); color: var(--accent); border: 1.5px solid #EFC9D7; }
+  .btn.small { min-height: 46px; font-size: 15px; padding: 0 16px; }
   .btn.wide { width: 100%; }
 
-  .card { margin: 20px 20px 0; padding: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 12px; }
-  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .divider { height: 1px; background: #EFE5E0; }
-  .check { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; font-size: 16px; }
-  .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
-  .check span:nth-child(2) { flex-grow: 1; }
-  .total { font-family: 'Frank Ruhl Libre', serif; font-size: 26px; font-weight: 700; color: var(--accent); }
+  /* ---- כרטיסים ---- */
+  .card { margin: 8px 16px 0; padding: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .appt-head { display: flex; align-items: center; gap: 12px; }
+  .badge { width: 48px; height: 48px; flex: 0 0 48px; border-radius: 16px; background: var(--accent-soft); color: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+  .badge small { font-size: 11px; font-weight: 700; }
+  .badge b { font-size: 20px; font-family: 'Frank Ruhl Libre', serif; }
+  .appt-text { display: flex; flex-direction: column; gap: 3px; }
+  .appt-text strong { font-size: 17px; }
+  .appt-text span { font-size: 15px; color: var(--muted); }
+  .divider { height: 1px; background: #F6E3EA; }
+  .place { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; }
+  .place svg { flex: 0 0 18px; margin-top: 3px; }
+  .place .dim { color: var(--muted); white-space: pre-line; }
 
-  form { padding: 22px 20px 0; display: flex; flex-direction: column; gap: 16px; }
+  #addon-card { display: contents; }
+  #addon-card[hidden] { display: none; }
+  .addon-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; }
+  .addon-text { display: flex; flex-direction: column; gap: 2px; font-size: 16px; font-weight: 600; }
+  .addon-text small { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .stepper { display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 24px; padding: 3px; }
+  .stepper button { width: 40px; height: 40px; border-radius: 20px; border: 0; background: var(--accent-soft); color: var(--accent); font-size: 22px; font-weight: 700; line-height: 1; padding: 0; }
+  .stepper button:disabled { background: transparent; color: #E8C9D5; }
+  .stepper output { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; }
+
+  form { padding: 20px 20px 0; display: flex; flex-direction: column; gap: 14px; }
   .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 15px; font-weight: 600; }
-  .field input { min-height: 52px; padding: 0 16px; border: 1px solid #DCCCC6; border-radius: 14px; background: var(--card); font: inherit; font-size: 17px; color: var(--text); }
-  .field input::placeholder { color: #A88E89; }
+  .field label { font-size: 15px; font-weight: 700; }
+  .field input { min-height: 52px; padding: 0 16px; border: 1px solid #EFC9D7; border-radius: 16px; background: var(--card); font: inherit; font-size: 17px; color: var(--text); }
+  .field input::placeholder { color: #A47B8A; }
   .field input[aria-invalid="true"] { border-color: var(--danger); }
-  .hint { font-size: 13px; color: var(--muted); }
-  .error { color: var(--danger); font-size: 15px; font-weight: 600; margin: 14px 24px 0; min-height: 1em; }
-  .form-actions { margin-top: auto; padding: 20px 20px 0; }
+  .note { margin: 16px 20px 0; padding: 12px 14px; border-radius: 16px; background: var(--accent-soft); display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; }
+  .note svg { flex: 0 0 18px; margin-top: 2px; }
+  .error { color: var(--danger); font-size: 15px; font-weight: 600; margin: 12px 24px 0; min-height: 1em; }
+  .form-actions { margin-top: auto; padding: 14px 20px 0; }
 
-  .done { align-items: center; text-align: center; }
-  .done .tick { margin-top: 96px; width: 88px; height: 88px; border-radius: 44px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
-  .done h1 { margin-top: 24px; font-size: 34px; }
-  .done .card { width: calc(100% - 40px); text-align: right; }
-  .done .actions { width: calc(100% - 40px); margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
-
-  footer { margin-top: auto; padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
+  /* ---- מסכי סיום ---- */
+  .done { align-items: center; text-align: center; padding-left: 4px; padding-right: 4px; }
+  .done .tick { margin-top: 58px; width: 84px; height: 84px; border-radius: 42px; background: #E3F4EA; display: flex; align-items: center; justify-content: center; }
+  .done .tick.wait { background: #FFF1D6; }
+  .done .tick.off { background: #F3E6EA; }
+  .done h1 { margin-top: 18px; font-size: 32px; padding: 0 16px; }
+  .done .sub { margin-top: 6px; padding: 0 24px; }
+  .done .card { width: calc(100% - 32px); text-align: right; margin-top: 18px; }
+  .done .card + .card { margin-top: 12px; }
+  .pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 12px; font-size: 14px; font-weight: 700; }
+  .pill.pending { background: #FFF1D6; color: #7A4B00; }
+  .pill.confirmed { background: #E3F4EA; color: #2F6B4F; }
+  .pill.cancelled { background: #F3E6EA; color: var(--muted); }
+  .link-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .small-note { font-size: 13px; color: var(--muted); text-align: center; }
+  .next-card { background: var(--accent-soft) !important; border: 0 !important; }
+  .next-card p { margin: 0; font-size: 15px; line-height: 1.5; }
+  .prev-line { font-size: 14px; color: var(--muted); }
+  .done .actions { width: calc(100% - 32px); margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .text-link { margin-top: auto; padding-top: 18px; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 15px; font-weight: 700; }
+  .text-link a, .text-link button { min-height: 44px; display: inline-flex; align-items: center; background: none; border: 0; padding: 0; color: var(--accent); font-size: 15px; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -118,39 +169,40 @@
 
   <!-- מסך 1: בחירת טיפול -->
   <section class="screen active" id="screen-service" aria-labelledby="t1">
-    <svg class="flower" width="170" height="150" viewBox="0 0 170 150" fill="none" stroke="#B9918A" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
-      <path d="M60 75c-18-6-26-24-14-34s28 2 30 18c4-16 22-26 32-14s0 28-18 32c18 4 28 20 16 30s-28-2-32-18c-2 16-18 28-30 18s-2-28 16-32z"/>
-      <circle cx="77" cy="76" r="6"/>
-      <path d="M110 112c14 6 30 14 52 34M128 120c4-10 14-14 22-10M140 132c8-4 18-2 22 6M20 128c6-12 18-16 28-12-4 10-16 16-28 12z"/>
-    </svg>
-    <header>
-      <div class="wordmark">yuvalnails</div>
-      <h1 id="t1" style="margin-top: 8px">קביעת תור</h1>
-      <p class="sub">איזה טיפול נעשה הפעם?</p>
+    <div class="hero">
+      <div class="hero-top">
+        <span class="wordmark">yuvalnails</span>
+        <a href="https://instagram.com/nailsby_yuval" dir="ltr">@nailsby_yuval</a>
+      </div>
+      <h1 id="t1">היי! איזה טיפול<br>נעשה הפעם?</h1>
       <div class="steps"><div class="bars"><span class="on"></span><span></span><span></span></div><small>שלב 1 מתוך 3</small></div>
-    </header>
-    <div class="services" id="services" role="list"></div>
-    <footer>
-      <span id="addon-hint"></span>
-      <a href="https://instagram.com/nailsby_yuval" dir="ltr" style="font-weight: 600">@nailsby_yuval</a>
-    </footer>
+    </div>
+    <div class="services" id="services" style="margin-top: 14px"></div>
+    <p class="foot-note" id="addon-hint">הבקשה נשלחת ליובל לאישור</p>
   </section>
 
   <!-- מסך 2: יום ושעה -->
   <section class="screen" id="screen-time" aria-labelledby="t2">
     <header>
-      <button class="back" type="button" data-go="service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
-      <h1 id="t2">מתי נוח לך?</h1>
-      <div class="steps"><div class="bars"><span class="on"></span><span class="on"></span><span></span></div><small>שלב 2 מתוך 3</small></div>
+      <button class="back" type="button" id="time-back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
+      <div class="title-row"><h1 id="t2">מתי נוח לך?</h1><small>שלב 2 מתוך 3</small></div>
       <div class="chip" id="time-chip"></div>
     </header>
-    <div class="days-wrap">
-      <h2 class="section-title" id="month-title"></h2>
-      <div class="days" id="days" aria-label="בחירת יום"></div>
+
+    <div class="cal" aria-label="בחירת תאריך">
+      <div class="cal-head">
+        <button class="cal-nav" type="button" id="cal-prev" aria-label="לחודש הקודם"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <h2 id="month-title" aria-live="polite"></h2>
+        <button class="cal-nav" type="button" id="cal-next" aria-label="לחודש הבא"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="cal-week" aria-hidden="true"><span>א׳</span><span>ב׳</span><span>ג׳</span><span>ד׳</span><span>ה׳</span><span>ו׳</span><span>ש׳</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <p class="cal-legend"><span><i style="background: #FFF0F5; border: 1px solid var(--line)"></i>יש מקום</span><span><i style="background: var(--accent)"></i>נבחר</span><span><s aria-hidden="true">12</s>אין תורים פנויים</span></p>
     </div>
+
     <div class="slots" id="slots" aria-live="polite"></div>
     <div class="bottom-bar">
-      <div class="summary"><small>התור שלך</small><strong id="time-summary">בחרי יום ושעה</strong></div>
+      <div class="summary"><small id="time-summary-label">התור שלך</small><strong id="time-summary">בחרי יום ושעה</strong></div>
       <button class="btn" type="button" id="to-details" disabled>המשך</button>
     </div>
   </section>
@@ -158,20 +210,25 @@
   <!-- מסך 3: פרטים -->
   <section class="screen" id="screen-details" aria-labelledby="t3">
     <header>
-      <button class="back" type="button" data-go="time"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
-      <h1 id="t3">כמעט סיימנו</h1>
-      <div class="steps"><div class="bars"><span class="on"></span><span class="on"></span><span class="on"></span></div><small>שלב 3 מתוך 3</small></div>
+      <button class="back" type="button" data-go="time"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>חזרה</button>
+      <div class="title-row"><h1 id="t3">כמעט סיימנו</h1><small>שלב 3 מתוך 3</small></div>
     </header>
     <div class="card" aria-label="סיכום התור">
-      <div class="row"><strong id="d-service" style="font-size: 18px"></strong><span id="d-price" style="color: var(--muted)"></span></div>
-      <div class="meta" id="d-when" style="font-size: 15px"></div>
-      <div class="divider"></div>
-      <label class="check" id="addon-row">
-        <input type="checkbox" id="addon">
-        <span id="addon-label"></span>
-        <span id="addon-price" style="color: var(--muted); font-size: 15px"></span>
-      </label>
-      <div class="row"><span style="font-weight: 600">סה״כ לתשלום בסטודיו</span><span class="total" id="d-total"></span></div>
+      <div class="appt-head" id="d-head"></div>
+      <div id="addon-card" hidden>
+        <div class="divider"></div>
+        <div class="addon-row">
+          <div class="addon-text">
+            <span id="addon-label"></span>
+            <small id="addon-price"></small>
+          </div>
+          <div class="stepper" role="group" aria-labelledby="addon-label">
+            <button type="button" id="addon-plus" aria-label="להוסיף השלמת ציפורן">+</button>
+            <output id="addon-count" aria-live="polite">0</output>
+            <button type="button" id="addon-minus" aria-label="להוריד השלמת ציפורן">−</button>
+          </div>
+        </div>
+      </div>
     </div>
     <form id="details-form" novalidate>
       <div class="field">
@@ -181,30 +238,58 @@
       <div class="field">
         <label for="phone">טלפון נייד</label>
         <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050-0000000" dir="ltr" style="text-align: right" required>
-        <span class="hint">נשלח לך תזכורת יום לפני התור</span>
       </div>
     </form>
+    <div class="note">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B83C6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span>השעה נשמרת לך מיד. יובל תאשר את התור ותשלח לך הודעה בוואטסאפ, עם הכתובת והמחיר.</span>
+    </div>
     <p class="error" id="error" role="alert"></p>
     <div class="form-actions">
-      <button class="btn wide" type="submit" form="details-form" id="book-btn">קביעת התור</button>
+      <button class="btn wide" type="submit" form="details-form" id="book-btn">שליחת בקשה לתור</button>
     </div>
   </section>
 
-  <!-- מסך 4: התור נקבע -->
+  <!-- מסך 4: הבקשה נשלחה -->
   <section class="screen done" id="screen-done" aria-labelledby="t4">
-    <div class="tick"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#7A3F8C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-    <h1 id="t4">התור נקבע!</h1>
-    <p class="sub" style="margin-top: 8px">מחכה לך, יובל</p>
-    <div class="wordmark" style="font-size: 26px; margin-top: 4px">yuvalnails</div>
+    <div class="tick wait"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8A5A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+    <h1 id="t4">הבקשה נשלחה!</h1>
+    <p class="sub" id="t4-sub">השעה שמורה לך. יובל תאשר בהקדם<br>ותשלח לך הודעה בוואטסאפ.</p>
+
     <div class="card" aria-label="פרטי התור">
-      <strong id="f-service" style="font-size: 18px"></strong>
-      <div class="meta" id="f-day" style="font-size: 16px"></div>
-      <div class="meta" id="f-time" style="font-size: 16px"></div>
-      <div class="meta" id="f-address" style="font-size: 16px"></div>
+      <span class="pill pending">ממתין לאישור של יובל</span>
+      <div class="appt-head" id="f-head"></div>
+      <div class="prev-line" id="f-prev"></div>
+      <div class="link-row">
+        <a class="btn small" id="status-link" href="#">מצב התור</a>
+        <button class="btn ghost small" type="button" id="copy-link">העתקת קישור</button>
+      </div>
+      <span class="small-note">כדאי לשמור את הקישור כדי לבדוק אם התור אושר</span>
     </div>
+
+    <div class="card next-card" id="next-card">
+      <p><b>לשמור כבר עכשיו מקום לתור הבא?</b><br>מומלץ לחזור אחרי כ-3 שבועות, ב<span id="next-suggest"></span>.</p>
+      <button class="btn wide" type="button" id="book-next" style="min-height: 48px; font-size: 16px">לקבוע את התור הבא</button>
+    </div>
+
+    <div class="text-link"><a id="change-link" href="#" target="_blank" rel="noopener">שינוי או ביטול הבקשה בוואטסאפ</a></div>
+  </section>
+
+  <!-- מסך 5: הקישור האישי - האם יובל אישרה -->
+  <section class="screen done" id="screen-status" aria-labelledby="t5">
+    <div class="tick wait" id="s-icon"></div>
+    <h1 id="t5">טוענת…</h1>
+    <p class="sub" id="t5-sub"></p>
+    <span class="wordmark" style="font-size: 26px; margin-top: 4px">yuvalnails</span>
+    <div id="s-list" style="display: contents"></div>
     <div class="actions">
-      <button class="btn" type="button" id="add-calendar">הוספה ליומן</button>
-      <a class="btn ghost" id="change-link" href="#">שינוי או ביטול התור</a>
+      <a class="btn" id="s-calendar" href="#" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>הוספה ליומן</a>
+      <a class="btn ghost" id="s-google" href="#" target="_blank" rel="noopener" hidden style="min-height: 48px; font-size: 16px">הוספה ל-Google Calendar</a>
+    </div>
+    <div class="text-link">
+      <a id="s-change" href="#" target="_blank" rel="noopener" hidden>שינוי או ביטול בוואטסאפ</a>
+      <button type="button" id="s-refresh">רענון</button>
+      <a href="/">קביעת תור חדש</a>
     </div>
   </section>
 </div>
@@ -212,10 +297,18 @@
 <script>
 // ---------- מצב האפליקציה ----------
 // כל מה שהלקוחה בחרה נשמר באובייקט אחד. כל מסך קורא ממנו ומעדכן אותו.
-const state = { info: null, service: null, date: null, time: null, addon: false, booking: null };
+const state = {
+  info: null, service: null, date: null, time: null, addon: 0,   // addon = כמה השלמות ציפורן
+  viewMonth: null,          // החודש שמוצג ביומן, "2026-10"
+  booking: null,            // התור האחרון שנקבע
+  isNext: false,            // האם זו קביעה של "התור הבא"
+  firstBooking: null,       // התור הראשון, כשקובעים גם את הבא
+  customer: null,           // שם וטלפון, כדי לא להקליד שוב
+};
 
 const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-const LETTERS = { 'ראשון': 'א׳', 'שני': 'ב׳', 'שלישי': 'ג׳', 'רביעי': 'ד׳', 'חמישי': 'ה׳', 'שישי': 'ו׳', 'שבת': 'ש׳' };
+const WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const NEXT_DAYS_DEFAULT = 21;
 const $ = (id) => document.getElementById(id);
 
 // בונים אלמנטים עם textContent ולא innerHTML: ככה טקסט שמגיע מבחוץ (כמו שם של לקוחה)
@@ -234,8 +327,33 @@ function el(tag, attrs = {}, ...children) {
 async function api(path, options) {
   const res = await fetch(path, options);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'משהו השתבש, נסי שוב');
+  // מספר השגיאה (404, 500...) עוזר להבין מה קרה: 404 = השרת לא מכיר את הכתובת, 500 = תקלה בקוד השרת
+  if (!res.ok) throw new Error(data.error || `משהו השתבש, נסי שוב (שגיאה ${res.status})`);
   return data;
+}
+
+// ---------- תאריכים ----------
+// עובדים עם מחרוזות "2026-10-08" ולא עם Date, כדי לא ליפול על הבדלי אזורי זמן
+const pad = (n) => String(n).padStart(2, '0');
+const isoOf = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
+const monthOf = (iso) => iso.slice(0, 7);
+function addDays(iso, n) {
+  const d = new Date(iso + 'T12:00');
+  d.setDate(d.getDate() + n);
+  return isoOf(d.getFullYear(), d.getMonth() + 1, d.getDate());
+}
+function shiftMonth(month, n) {
+  const [y, m] = month.split('-').map(Number);
+  const d = new Date(y, m - 1 + n, 1);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+}
+function dayLabel(iso) {
+  const d = new Date(iso + 'T12:00');
+  return `יום ${WEEKDAYS[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}`;
+}
+function longDayLabel(iso) {
+  const d = new Date(iso + 'T12:00');
+  return `יום ${WEEKDAYS[d.getDay()]}, ${d.getDate()} ב${MONTHS[d.getMonth()]}`;
 }
 
 function durationLabel(min) {
@@ -244,18 +362,31 @@ function durationLabel(min) {
 function addMinutes(hhmm, min) {
   const [h, m] = hhmm.split(':').map(Number);
   const t = h * 60 + m + min;
-  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+  return `${pad(Math.floor(t / 60))}:${pad(t % 60)}`;
 }
+// טווח שעות בכיוון שמאל-לימין, אחרת בעברית "09:30 – 10:30" מוצג הפוך
+const timeRange = (from, to) => el('span', { dir: 'ltr' }, `${from} – ${to}`);
 function totalMinutes() {
-  return state.service.duration_minutes + (state.addon && state.info.addon ? state.info.addon.duration_minutes : 0);
+  return state.service.duration_minutes + (state.info.addon ? state.info.addon.duration_minutes * state.addon : 0);
 }
-function totalPrice() {
-  return state.service.price + (state.addon && state.info.addon ? state.info.addon.price : 0);
-}
-function dayLabel(iso) {
+const MONTHS_SHORT = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+// "לוח שנה קטן" עם החודש והיום, ולידו שם הטיפול והשעה
+function apptHead(iso, service, from, to) {
   const d = new Date(iso + 'T12:00');
-  const weekday = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'][d.getDay()];
-  return `יום ${weekday} ${d.getDate()}.${d.getMonth() + 1}`;
+  return [
+    el('div', { class: 'badge', 'aria-hidden': 'true' }, el('small', {}, MONTHS_SHORT[d.getMonth()]), el('b', {}, String(d.getDate()))),
+    el('div', { class: 'appt-text' },
+      el('strong', {}, service),
+      el('span', {}, `יום ${WEEKDAYS[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1} · `, timeRange(from, to))),
+  ];
+}
+const PIN_SVG = '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>';
+function svgIcon(paths, color = 'currentColor', size = 18) {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  for (const [k, v] of Object.entries({ width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color,
+    'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' })) s.setAttribute(k, v);
+  s.innerHTML = paths;                                   // תוכן קבוע, לא קלט חיצוני
+  return s;
 }
 const clockIcon = () => {
   const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -271,62 +402,98 @@ function show(name) {
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => show(b.dataset.go)));
+$('time-back').addEventListener('click', () => show(state.isNext ? 'done' : 'service'));
 
 // ---------- מסך 1 ----------
 function renderServices() {
-  const list = $('services');
-  list.replaceChildren(...state.info.services.map((s) =>
-    el('button', { class: 'service', type: 'button', role: 'listitem', onclick: () => pickService(s) },
-      el('span', { class: 'body' },
+  // שתי קבוצות: ידיים, ורגליים (כל טיפול שיש בשם שלו "רגליים")
+  const groups = [['ידיים', (s) => !s.name.includes('רגליים')], ['רגליים', (s) => s.name.includes('רגליים')]]
+    .map(([title, test]) => [title, state.info.services.filter(test)]).filter(([, list]) => list.length);
+  $('services').replaceChildren(...groups.map(([title, list]) => el('section', { class: 'svc-group' },
+    el('h2', {}, title),
+    ...list.map((s) => el('button', { class: 'service', type: 'button', onclick: () => pickService(s) },
+      el('span', {},
         el('span', { class: 'name' }, s.name),
         el('span', { class: 'meta' }, clockIcon(), durationLabel(s.duration_minutes))),
-      el('span', { class: 'price' }, `${s.price} ₪`))
-  ));
-  if (state.info.addon) $('addon-hint').textContent = `${state.info.addon.name} אפשר להוסיף בשלב 3`;
+      el('span', { class: 'go' }, svgIcon('<path d="M15 6l-6 6 6 6"/>', 'currentColor', 16)))))));
+  if (state.info.addon) $('addon-hint').textContent = `${state.info.addon.name} אפשר להוסיף בשלב 3 · הבקשה נשלחת ליובל לאישור`;
 }
 
 function pickService(service) {
-  Object.assign(state, { service, date: null, time: null, addon: false });
-  $('addon').checked = false;
-  $('time-chip').replaceChildren(el('b', {}, service.name),
-    el('span', { style: 'color: var(--muted)' }, `· ${durationLabel(service.duration_minutes)} · ${service.price} ₪`));
-  show('time');
-  loadDays();
+  Object.assign(state, { service, date: null, time: null, addon: 0, isNext: false, firstBooking: null });
+  openTimeScreen(state.info.today, null);
 }
 
-// ---------- מסך 2 ----------
-async function loadDays() {
-  $('days').replaceChildren(); $('slots').replaceChildren(el('p', { class: 'empty' }, 'טוענת ימים פנויים…'));
-  updateTimeSummary();
+function openTimeScreen(preferDate, preferTime) {
+  $('t2').textContent = state.isNext ? 'מתי התור הבא?' : 'מתי נוח לך?';
+  $('time-summary-label').textContent = state.isNext ? 'התור הבא שלך' : 'התור שלך';
+  $('time-chip').replaceChildren(
+    ...(state.isNext ? [el('span', {}, 'התור הבא ·')] : []),
+    el('b', {}, state.service.name),
+    el('span', { style: 'color: var(--muted)' }, `· ${durationLabel(state.service.duration_minutes)}`));
+  show('time');
+  loadMonth(monthOf(preferDate), { preferDate, preferTime, autoAdvance: 2 });
+}
+
+// ---------- מסך 2: יומן ----------
+// preferDate: יום שננסה לבחור אוטומטית (או הראשון הפנוי אחריו).
+// autoAdvance: אם אין אף יום פנוי מהתאריך הזה עד סוף החודש, כמה חודשים מותר לדלג קדימה.
+async function loadMonth(month, { preferDate = null, preferTime = null, autoAdvance = 0 } = {}) {
+  state.viewMonth = month;
+  const [y, m] = month.split('-').map(Number);
+  $('month-title').textContent = `${MONTHS[m - 1]} ${y}`;
+  $('cal-prev').disabled = month <= monthOf(state.info.today);
+  $('cal-next').disabled = month >= monthOf(state.info.last_day);
+  $('cal-grid').replaceChildren();
+  $('slots').replaceChildren(el('p', { class: 'empty' }, 'טוענת ימים פנויים…'));
+
+  let days;
   try {
-    const { days } = await api(`/api/days?service_id=${state.service.id}&addon=${state.addon ? 1 : 0}`);
-    const first = days.find((d) => d.available);
-    const d0 = new Date(days[0].date + 'T12:00');
-    $('month-title').textContent = `${MONTHS[d0.getMonth()]} ${d0.getFullYear()}`;
-    $('days').replaceChildren(...days.map((d) => {
-      const num = Number(d.date.slice(8));
-      return el('button', {
-        class: 'day', type: 'button', 'data-date': d.date, 'aria-pressed': 'false',
-        'aria-label': `${dayLabel(d.date)}${d.available ? '' : ', אין תורים'}`,
-        ...(d.available ? {} : { disabled: '' }),
-        onclick: () => pickDay(d.date),
-      }, el('small', {}, LETTERS[d.weekday]), el('strong', {}, String(num)));
-    }));
-    if (state.date && days.some((d) => d.date === state.date && d.available)) pickDay(state.date, state.time);
-    else if (first) pickDay(first.date);
-    else $('slots').replaceChildren(el('p', { class: 'empty' }, 'אין תורים פנויים בשבועיים הקרובים. כדאי לשלוח הודעה ליובל.'));
+    ({ days } = await api(`/api/month?service_id=${state.service.id}&addon=${state.addon}&month=${month}`));
   } catch (e) {
     $('slots').replaceChildren(el('p', { class: 'empty' }, e.message));
+    return;
   }
+  if (state.viewMonth !== month) return;          // הלקוחה כבר עברה לחודש אחר בזמן הטעינה
+
+  const firstWeekday = new Date(days[0].date + 'T12:00').getDay();   // 0 = ראשון
+  const blanks = Array.from({ length: firstWeekday }, () => el('span', { 'aria-hidden': 'true' }));
+  $('cal-grid').replaceChildren(...blanks, ...days.map((d) => {
+    const num = String(Number(d.date.slice(8)));
+    const open = d.status === 'available';
+    const why = d.status === 'none' ? ', אין תורים פנויים' : '';
+    const cls = ['cal-day', d.status, d.date === state.info.today ? 'today' : ''].join(' ');
+    return el('button', {
+      class: cls, type: 'button', 'data-date': d.date, 'aria-pressed': 'false',
+      'aria-label': `${longDayLabel(d.date)}${why}`,
+      ...(open ? {} : { disabled: '' }),
+      onclick: () => pickDay(d.date),
+    }, num);
+  }));
+
+  const available = days.filter((d) => d.status === 'available').map((d) => d.date);
+  const target = preferDate ? available.find((d) => d >= preferDate) : null;
+  if (target) return pickDay(target, target === preferDate ? preferTime : null);
+  if (state.date && available.includes(state.date)) return pickDay(state.date, state.time);
+  if (preferDate && autoAdvance > 0 && !$('cal-next').disabled) {
+    return loadMonth(shiftMonth(month, 1), { preferDate: shiftMonth(month, 1) + '-01', preferTime, autoAdvance: autoAdvance - 1 });
+  }
+  state.date = null; state.time = null; updateTimeSummary();
+  $('slots').replaceChildren(el('p', { class: 'empty' },
+    available.length ? 'בחרי יום ביומן כדי לראות שעות פנויות.' : 'אין תורים פנויים בחודש הזה. אפשר לעבור לחודש הבא.'));
 }
+
+$('cal-prev').addEventListener('click', () => loadMonth(shiftMonth(state.viewMonth, -1)));
+$('cal-next').addEventListener('click', () => loadMonth(shiftMonth(state.viewMonth, 1)));
 
 async function pickDay(date, keepTime = null) {
   state.date = date; state.time = null;
-  document.querySelectorAll('.day').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.date === date)));
+  document.querySelectorAll('.cal-day').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.date === date)));
   updateTimeSummary();
   $('slots').replaceChildren(el('p', { class: 'empty' }, 'טוענת שעות…'));
   try {
-    const { slots } = await api(`/api/slots?service_id=${state.service.id}&date=${date}&addon=${state.addon ? 1 : 0}`);
+    const { slots } = await api(`/api/slots?service_id=${state.service.id}&date=${date}&addon=${state.addon}`);
+    if (state.date !== date) return;              // הלקוחה כבר בחרה יום אחר
     const groups = [['בוקר', (t) => t < '12:00'], ['צהריים', (t) => t >= '12:00' && t < '16:00'], ['ערב', (t) => t >= '16:00']]
       .map(([name, test]) => [name, slots.filter(test)]).filter(([, list]) => list.length);
     $('slots').replaceChildren(
@@ -358,37 +525,43 @@ $('to-details').addEventListener('click', () => { renderDetails(); show('details
 // ---------- מסך 3 ----------
 function renderDetails() {
   const a = state.info.addon;
-  $('d-service').textContent = state.service.name;
-  $('d-price').textContent = `${state.service.price} ₪`;
-  $('d-when').replaceChildren(clockIcon(), `${dayLabel(state.date)} · ${state.time} – ${addMinutes(state.time, totalMinutes())}`);
-  $('addon-row').hidden = !a;
-  if (a) { $('addon-label').textContent = `להוסיף ${a.name}`; $('addon-price').textContent = `+${a.price} ₪`; }
-  $('d-total').textContent = `${totalPrice()} ₪`;
+  $('t3').textContent = state.isNext ? 'מאשרות את התור הבא' : 'כמעט סיימנו';
+  $('d-head').replaceChildren(...apptHead(state.date, state.service.name, state.time, addMinutes(state.time, totalMinutes())));
+  renderAddon();
   $('error').textContent = '';
+  if (state.customer) {                           // בתור הבא לא צריך להקליד שוב
+    $('name').value = state.customer.name;
+    $('phone').value = state.customer.phone;
+  }
 }
 
-$('addon').addEventListener('change', async (e) => {
-  state.addon = e.target.checked;
-  $('error').textContent = '';
-  if (state.addon) {
-    // התור מתארך: צריך לוודא שהשעה שנבחרה עדיין פנויה גם עם התוספת
-    try {
-      const { slots } = await api(`/api/slots?service_id=${state.service.id}&date=${state.date}&addon=1`);
-      if (!slots.includes(state.time)) {
-        state.addon = false; e.target.checked = false;
-        renderDetails();
-        $('error').textContent = 'עם התוספת התור לא נכנס בשעה הזו. אפשר לחזור ולבחור שעה אחרת.';
-        return;
-      }
-    } catch (err) {
-      state.addon = false; e.target.checked = false;
-      renderDetails();
-      $('error').textContent = err.message;
-      return;
-    }
-  }
-  renderDetails();
-});
+// ---------- השלמת ציפורן: משפיעה רק על המחיר, לא על השעות ----------
+function addonAllowed() {
+  return Boolean(state.info.addon && state.service && state.service.allows_addon);
+}
+
+function renderAddon() {
+  const a = state.info.addon;
+  $('addon-card').hidden = !addonAllowed();       // למשל לק ג'ל ברגליים - בלי השלמות
+  if (!addonAllowed()) return;
+  $('addon-label').textContent = a.name;
+  // הערה על התוספת: 10 ₪ לכל השלמה, והסכום מתעדכן לפי הכמות
+  $('addon-price').textContent = state.addon
+    ? `תוספת של ${a.price * state.addon} ₪`
+    : `בתוספת ${a.price} ₪ לכל ציפורן`;
+  $('addon-count').textContent = String(state.addon);
+  $('addon-minus').disabled = state.addon === 0;
+  $('addon-plus').disabled = state.addon >= state.info.max_addon;
+}
+
+function changeAddon(delta) {
+  const next = Math.max(0, Math.min(state.info.max_addon, state.addon + delta));
+  if (next === state.addon) return;
+  state.addon = next;
+  renderAddon();
+}
+$('addon-plus').addEventListener('click', () => changeAddon(1));
+$('addon-minus').addEventListener('click', () => changeAddon(-1));
 
 $('details-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -400,56 +573,146 @@ $('details-form').addEventListener('submit', async (e) => {
   if (name.length < 2) { $('error').textContent = 'צריך שם כדי לקבוע תור'; $('name').focus(); return; }
   if (!/^05\d{8}$/.test(phoneDigits)) { $('error').textContent = 'מספר הטלפון לא נראה תקין'; $('phone').focus(); return; }
 
-  $('book-btn').disabled = true; $('book-btn').textContent = 'קובעת…'; $('error').textContent = '';
+  $('book-btn').disabled = true; $('book-btn').textContent = 'שולחת…'; $('error').textContent = '';
   try {
-    state.booking = await api('/api/book', {
+    const booking = await api('/api/book', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ service_id: state.service.id, start: `${state.date}T${state.time}`, name, phone, addon: state.addon }),
+      body: JSON.stringify({
+        service_id: state.service.id, start: `${state.date}T${state.time}`, name, phone,
+        addon: state.addon, is_next: state.isNext,
+      }),
     });
-    renderDone(name);
+    state.booking = { ...booking, serviceObj: state.service };
+    state.customer = { name, phone };
+    renderDone();
     show('done');
   } catch (err) {
     $('error').textContent = err.message === 'השעה הזו כבר לא פנויה'
       ? 'אופס, מישהי תפסה את השעה הזו ממש עכשיו. חזרי לבחור שעה אחרת.'
       : err.message;
   } finally {
-    $('book-btn').disabled = false; $('book-btn').textContent = 'קביעת התור';
+    $('book-btn').disabled = false; $('book-btn').textContent = 'שליחת בקשה לתור';
   }
 });
 
 // ---------- מסך 4 ----------
-function renderDone(name) {
+function renderDone() {
   const b = state.booking;
-  $('f-service').textContent = b.service;
-  $('f-day').replaceChildren(dayLabel(state.date));
-  $('f-time').replaceChildren(clockIcon(), `${b.start.slice(11)} – ${b.end.slice(11)}`);
-  $('f-address').textContent = state.info.studio_address || '';
-  $('f-address').hidden = !state.info.studio_address;
+  const bDate = b.start.slice(0, 10), bTime = b.start.slice(11);
+  $('t4').textContent = state.isNext ? 'גם הבקשה לתור הבא נשלחה!' : 'הבקשה נשלחה!';
+  $('f-head').replaceChildren(...apptHead(bDate, b.service, bTime, b.end.slice(11)));
+  const first = state.firstBooking;
+  $('f-prev').hidden = !first;
+  if (first) $('f-prev').textContent = `והתור הקרוב שלך: ${dayLabel(first.start.slice(0, 10))} בשעה ${first.start.slice(11)}`;
+
+  // הצעה לקבוע את התור הבא - רק אחרי התור הראשון, לא בלולאה
+  $('next-card').hidden = state.isNext;
+  if (!state.isNext) $('next-suggest').textContent = longDayLabel(suggestedNextDate());
+
+  $('status-link').href = statusUrl();
   const wa = state.info.whatsapp;
   $('change-link').hidden = !wa;
   if (wa) {
-    const msg = `היי יובל, זו ${name}. אני רוצה לשנות או לבטל את התור שלי ב${dayLabel(state.date)} בשעה ${state.time}`;
+    const msg = `היי יובל, זו ${state.customer.name}. אני רוצה לשנות או לבטל את הבקשה שלי לתור ב${dayLabel(bDate)} בשעה ${bTime}`;
     $('change-link').href = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
   }
 }
 
-// קובץ .ics הוא פורמט סטנדרטי שכל אפליקציית יומן (גוגל, אפל, אאוטלוק) יודעת לפתוח
-$('add-calendar').addEventListener('click', () => {
-  const b = state.booking;
-  const fmt = (s) => s.replace(/[-: ]/g, '').slice(0, 12) + '00';
-  const ics = [
-    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//yuvalnails//booking//HE', 'BEGIN:VEVENT',
-    `UID:yuvalnails-${b.id}@booking`, `DTSTART;TZID=Asia/Jerusalem:${fmt(b.start)}`, `DTEND;TZID=Asia/Jerusalem:${fmt(b.end)}`,
-    `SUMMARY:${b.service} אצל יובל`, ...(state.info.studio_address ? [`LOCATION:${state.info.studio_address}`] : []),
-    'END:VEVENT', 'END:VCALENDAR',
-  ].join('\r\n');
-  const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
-  el('a', { href: url, download: 'yuvalnails.ics' }).click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+function suggestedNextDate() {
+  const days = state.booking.serviceObj.refill_days || NEXT_DAYS_DEFAULT;
+  return addDays(state.booking.start.slice(0, 10), days);
+}
+
+// הקישור האישי: כל התורים שנקבעו עכשיו (התור + התור הבא) בקישור אחד
+function statusUrl() {
+  const tokens = [state.firstBooking, state.booking].filter(Boolean).map((b) => b.token);
+  return `${location.origin}/?booking=${tokens.join(',')}`;
+}
+
+$('copy-link').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(statusUrl()); $('copy-link').textContent = '✓ הועתק'; }
+  catch { $('copy-link').textContent = 'לא הצלחנו להעתיק'; }
+  setTimeout(() => { $('copy-link').textContent = 'העתקת קישור'; }, 2000);
 });
 
+$('book-next').addEventListener('click', () => {
+  const b = state.booking;
+  state.firstBooking = b;
+  state.isNext = true;
+  state.service = b.serviceObj;
+  state.addon = 0;
+  state.date = null; state.time = null;
+  // מנסים את אותה שעה בדיוק, 3 שבועות אחרי. אם תפוס - היום הפנוי הראשון אחרי
+  openTimeScreen(suggestedNextDate(), b.start.slice(11));
+});
+
+// ---------- מסך 5: מצב התור (הקישור האישי) ----------
+const STATUS_TEXT = { pending: 'ממתין לאישור של יובל', confirmed: '✓ התור אושר', cancelled: 'התור בוטל' };
+const ICONS = {
+  pending: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  confirmed: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  cancelled: '<path d="M7 7l10 10M17 7L7 17"/>',
+};
+
+async function showStatus(tokens) {
+  show('status');
+  let list;
+  try {
+    list = await Promise.all(tokens.map((t) => api(`/api/booking/${encodeURIComponent(t)}`).then((b) => ({ ...b, token: t }))));
+  } catch (e) {
+    $('t5').textContent = 'לא מצאנו את התור';
+    $('t5-sub').textContent = 'אולי הקישור לא הועתק עד הסוף. אפשר לשאול את יובל בוואטסאפ.';
+    return;
+  }
+  // הכותרת לפי המצב ה"פחות טוב": אם משהו עדיין ממתין - ממתין
+  const overall = list.some((b) => b.status === 'pending') ? 'pending'
+    : list.every((b) => b.status === 'cancelled') ? 'cancelled' : 'confirmed';
+  const name = list[0].name;
+  $('t5').textContent = { pending: 'עוד רגע…', confirmed: `${name}, התור אושר!`, cancelled: 'התור בוטל' }[overall];
+  $('t5-sub').textContent = {
+    pending: 'יובל עוד לא אישרה. השעה שמורה לך, והיא תעדכן אותך בוואטסאפ.',
+    confirmed: 'מחכה לך, יובל',
+    cancelled: 'אם זו טעות או שתרצי מועד אחר, אפשר לכתוב ליובל בוואטסאפ.',
+  }[overall];
+  $('s-icon').className = 'tick ' + { pending: 'wait', confirmed: '', cancelled: 'off' }[overall];
+  const color = { pending: '#8A5A00', confirmed: '#2F6B4F', cancelled: '#8A5C6C' }[overall];
+  $('s-icon').innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[overall]}</svg>`;  // תוכן קבוע, לא קלט חיצוני
+
+  $('s-list').replaceChildren(...list.map((b) => {
+    const showPlace = b.studio_address && b.status !== 'cancelled';
+    return el('div', { class: 'card', 'aria-label': 'פרטי התור' },
+      el('span', { class: 'pill ' + b.status }, STATUS_TEXT[b.status] || b.status),
+      el('div', { class: 'appt-head' }, ...apptHead(b.start.slice(0, 10), b.service, b.start.slice(11), b.end.slice(11))),
+      ...(showPlace ? [el('div', { class: 'divider' }), el('div', { class: 'place' }, svgIcon(PIN_SVG, '#B83C6E'),
+        el('span', {}, b.studio_address, ...(b.directions ? [el('br'), el('span', { class: 'dim' }, b.directions)] : [])))] : []));
+  }));
+
+  const confirmed = list.filter((b) => b.status === 'confirmed');
+  // ליומן רק תור שאושר. באייפון הקישור פותח ישר את "הוספה ליומן"
+  $('s-calendar').hidden = !confirmed.length;
+  $('s-calendar').href = `/booking/${confirmed.map((b) => b.token).join(',')}.ics`;
+  // Google Calendar (אנדרואיד): קישור אחד לתור הראשון שאושר
+  $('s-google').hidden = !confirmed.length;
+  if (confirmed.length) {
+    const b = confirmed[0], g = (s) => s.replace(/[-:]/g, '').replace(' ', 'T') + '00';
+    const q = new URLSearchParams({ action: 'TEMPLATE', text: `${b.service} אצל יובל 💅`,
+      dates: `${g(b.start)}/${g(b.end)}`, ctz: 'Asia/Jerusalem', location: b.studio_address || '' });
+    $('s-google').href = `https://calendar.google.com/calendar/render?${q}`;
+  }
+  const wa = list[0].whatsapp;
+  $('s-change').hidden = !wa;
+  if (wa) {
+    const first = list.find((b) => b.status !== 'cancelled') || list[0];
+    const msg = `היי יובל, זו ${name}. לגבי התור שלי ב${dayLabel(first.start.slice(0, 10))} בשעה ${first.start.slice(11)}`;
+    $('s-change').href = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+  }
+}
+$('s-refresh').addEventListener('click', () => showStatus(new URLSearchParams(location.search).get('booking').split(',')));
+
 // ---------- הפעלה ----------
+const bookingParam = new URLSearchParams(location.search).get('booking');
+if (bookingParam) showStatus(bookingParam.split(',').filter(Boolean).slice(0, 4));
 api('/api/info').then((info) => { state.info = info; renderServices(); })
   .catch(() => $('services').replaceChildren(el('p', { class: 'empty' }, 'לא הצלחנו לטעון את הטיפולים. נסי לרענן את העמוד.')));
 </script>
